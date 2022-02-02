@@ -1,6 +1,7 @@
 package edu.cwru.sepia.agent;
 
 import edu.cwru.sepia.action.Action;
+import edu.cwru.sepia.agent.AstarAgent.MapLocation;
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
@@ -187,6 +188,7 @@ public class AstarAgent extends Agent {
         System.out.println("Total planning time: " + totalPlanTime/1e9);
         System.out.println("Total execution time: " + totalExecutionTime/1e9);
         System.out.println("Total time: " + (totalExecutionTime + totalPlanTime)/1e9);
+        System.exit(0);
     }
 
     @Override
@@ -360,7 +362,7 @@ public class AstarAgent extends Agent {
         	
         	// an array to store surrounding positions of the current position
         	// these are the potential moves for the next move of our footman
-        	MapLocation[] potential_moves = calculate_surrounding_positions(current_position);
+        	MapLocation[] potential_moves = calculateSurroundingPositions(current_position);
         	
         	// variable to hold value of heuristic function
         	float heuristic_holder = Float.MAX_VALUE;
@@ -373,14 +375,14 @@ public class AstarAgent extends Agent {
             for (MapLocation potential_move : potential_moves) 
             {
             	// check if a move is legitimate
-            	if (is_position_valid(potential_move, xExtent, yExtent) && 
-            			is_position_empty(potential_move, enemyFootmanLoc, resource_existence)) {
+            	if (Helper.isPositionValid(potential_move, xExtent, yExtent) && 
+            			Helper.isPositionEmpty(potential_move, enemyFootmanLoc, resource_existence)) {
             		//check if a move is yet to be explored
             		if (!closed_list.contains(potential_move)) {
             			// add the potential move to open list
             			open_list.add(potential_move);
             			// calculate the heuristic distance (cost) of this potential move
-                        float potential_move_heuristic = heuristic_calculation(potential_move, goal);
+                        float potential_move_heuristic = Helper.heuristicCalculation(potential_move, goal);
                         potential_move.cost = potential_move_heuristic;
                         
                         // update the heuristic value and heuristic move if possible
@@ -403,7 +405,7 @@ public class AstarAgent extends Agent {
             current_position = heuristic_move;
 
             // check if the goal has been reached
-            if (is_same_position(heuristic_move, goal)) {
+            if (Helper.isSamePosition(heuristic_move, goal)) {
                 goal_reached = true;
             } else {
             	// if not yet reached the goal, add this move to the goal path.
@@ -411,6 +413,18 @@ public class AstarAgent extends Agent {
             }
         } // repeat until the goal is reached or until all alternative is already considered
         while (!goal_reached && !open_list.isEmpty());
+        
+        // Get the final node in the goal path to test
+        MapLocation test = goal_path.pop();
+        // Test if the end of our goal path is next to the goal node, if not close program
+        if (Helper.heuristicCalculation(test, goal) != 1) {
+        	System.out.println("No available path.");
+    		System.exit(0);
+    		return null;
+        }
+        
+        // Add the test node back to the goal path if it is next to the goal node
+        goal_path.add(test);
 
         // create a stack to keep track of the actual moves to make in reality
         Stack<MapLocation> result = new Stack<MapLocation>();
@@ -421,87 +435,36 @@ public class AstarAgent extends Agent {
         return result;
     }
     
-    // Below are 5 helpers methods to use in support of AstarSearch
-	
-	/** Method to calculate heuristic Chebyshev distance
-	 * 
-	 * @param current_position
-	 * @param goal
-	 * @return the heuristic Chebyshev distance
-	 */
-	private float heuristic_calculation(MapLocation current_position, MapLocation goal)
-	{
-		if (Math.abs(goal.x - current_position.x) > Math.abs(goal.y - current_position.y)) {
-            return (float) Math.abs(goal.x - current_position.x);
-        }
-        return (float) Math.abs(goal.y - current_position.y);
-	}
-	
-	/** Method to check if the location moved to is empty (do not have enemy/resource there)
-	 * 
-	 * @param destination
-	 * @param enemy_position
-	 * @param resource_existence --> true if there is a resource at that location, false otherwise 
-	 * @return true if the destination is empty, false otherwise
-	 */
-	private boolean is_position_empty(MapLocation destination, MapLocation enemy_position, boolean[][] resource_existence) 
-	{
-		return (destination != enemy_position) && (!resource_existence[destination.x][destination.y]);
-	}
-	
-	/** Method to check if the location moved to is in the map
-	 * 
-	 * @param destination
-	 * @param xExtent
-	 * @param yExtent
-	 * @return true if destination is in the map, false otherwise
-	 */
-	private boolean is_position_valid(MapLocation destination, int xExtent, int yExtent) 
-	{
-		return (destination.x >= 0 && destination.x <= xExtent) && (destination.y >= 0 && destination.y <= yExtent);
-	}
-
-    /** Method to check if the current position is the same as the location intent to move to
-     * 
-     * @param current_position
-     * @param destination
-     * @return true  if it is the same position, false otherwise
-     */
-	private boolean is_same_position(MapLocation current_position, MapLocation destination) 
-	{
-		return (current_position.x == destination.x) && (current_position.y == destination.y);
-	}
-	
-	/** Method to calculate the surrounding positions from any current position
+	/**
+	 * Method to calculate the surrounding positions from any current position
 	 * 
 	 * @param current_position
 	 * @return an array of 8 positions around the current position
 	 */
-	private MapLocation[] calculate_surrounding_positions(MapLocation current_position) 
-	{
+	private MapLocation[] calculateSurroundingPositions(MapLocation current_position) {
 		// array of surrounding positions
 		MapLocation[] surrounding_positions = new MapLocation[8];
-		
+
 		// pointer for the surrounding positions array
 		int pointer = 0;
-		/*for (int i = current_position.x - 1; i <= current_position.x + 1; i++) {
-			for (int j = current_position.y - 1; j <= current_position.y + 1; j++) {
-				MapLocation new_location = new MapLocation(i, j, current_position, 0);
-				if (!is_same_position(new_location, current_position)) {
-					surrounding_positions[pointer] = new_location;
-					pointer++;
-				}
-			}
-		}*/                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+		/*
+		 * for (int i = current_position.x - 1; i <= current_position.x + 1; i++) { for
+		 * (int j = current_position.y - 1; j <= current_position.y + 1; j++) {
+		 * MapLocation new_location = new MapLocation(i, j, current_position, 0); if
+		 * (!is_same_position(new_location, current_position)) {
+		 * surrounding_positions[pointer] = new_location; pointer++; } } }
+		 */
 		for (int i = current_position.x - 1; i <= current_position.x + 1; i++) {
 			surrounding_positions[pointer] = new MapLocation(i, current_position.y + 1, current_position, 0);
 			pointer++;
 			surrounding_positions[pointer] = new MapLocation(i, current_position.y - 1, current_position, 0);
 			pointer++;
 		}
-		surrounding_positions[pointer] = new MapLocation(current_position.x - 1, current_position.y, current_position, 0);
+		surrounding_positions[pointer] = new MapLocation(current_position.x - 1, current_position.y, current_position,
+				0);
 		pointer++;
-		surrounding_positions[pointer] = new MapLocation(current_position.x + 1, current_position.y, current_position, 0);
+		surrounding_positions[pointer] = new MapLocation(current_position.x + 1, current_position.y, current_position,
+				0);
 		pointer++;
 		return surrounding_positions;
 	}
