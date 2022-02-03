@@ -1,7 +1,6 @@
 package edu.cwru.sepia.agent;
 
 import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.agent.AstarAgent.MapLocation;
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
@@ -14,17 +13,61 @@ import java.util.*;
 
 public class AstarAgent extends Agent {
 
-    class MapLocation
+    static class MapLocation implements Comparable<MapLocation>
     {
         public int x, y;
-        public MapLocation cameFrom;
-		public float cost;
+        // Variable to determine the previous position
+        MapLocation cameFrom;
+        // Variable to hold the heuristic value of a node
+        float heuristic;
+        // Variable to hold the cost of a node
+        float cost;
 
         public MapLocation(int x, int y, MapLocation cameFrom, float cost)
         {
             this.x = x;
             this.y = y;
         }
+        
+        /**
+         * Method to check if another position is the same as the current position
+         */
+        @Override
+        public boolean equals(Object o) {
+        	if (o instanceof MapLocation) {
+        		MapLocation temp = (MapLocation)o;
+        		return temp.x == this.x && temp.y == this.y;
+        	}
+        	else {
+        		return false;
+        	}
+        }
+        
+        @Override
+        public int hashCode (){
+        	return 31*x+y;
+        }
+        
+        /**
+         * The method to compare the f(n) = g(n) + h(n) values of two positions
+         */
+        @Override
+    	public int compareTo(MapLocation loc) {
+    		
+    		// Determine the estimated cost for each node
+    		double cost = heuristic + this.cost;
+    		double costToCompare = loc.heuristic + loc.cost;
+    		
+    		if (cost > costToCompare) {
+    			return 1;
+    		}
+    		else if (cost == costToCompare) {
+    			return 0;
+    		}
+    		else {
+    			return -1;
+    		}
+    	}
     }
 
     Stack<MapLocation> path;
@@ -207,11 +250,6 @@ public class AstarAgent extends Agent {
      * This method should return true when the path needs to be replanned
      * and false otherwise. This will be necessary on the dynamic map where the
      * footman will move to block your unit.
-     * 
-     * You can check the position of the enemy footman with the following code:
-     * state.getUnit(enemyFootmanID).getXPosition() or .getYPosition().
-     * 
-     * There are more examples of getting the positions of objects in SEPIA in the findPath method.
      *
      * @param state
      * @param history
@@ -220,33 +258,23 @@ public class AstarAgent extends Agent {
      */
     private boolean shouldReplanPath(State.StateView state, History.HistoryView history, Stack<MapLocation> currentPath)
     {
-    	Unit.UnitView enemy_footman_unit = state.getUnit(enemyFootmanID);
-    	Unit.UnitView player_footman_unit = state.getUnit(footmanID);
+    	Unit.UnitView enemyFootmanUnit = state.getUnit(enemyFootmanID);
+    	MapLocation enemyFootmanPosition = null;
+    	// If there is no enemy on map
+    	if (enemyFootmanID == -1){
+    		return false;
+    	}
+    	// Get the postion of enemy footman
+    	else{
+    		enemyFootmanPosition = new MapLocation(enemyFootmanUnit.getXPosition(), enemyFootmanUnit.getYPosition(), null, 0);
+    	}
     	
-    	// check if circumnavigate is possible and if there is no enemy
-        if (currentPath.size() < 4 || enemy_footman_unit == null) {
-            return false;
-        }
-        
-        // if there is enemy
-        if(enemy_footman_unit != null) 
-        {
-            // find enemy's position on map
-            int enemy_x = enemy_footman_unit.getXPosition();
-            int enemy_y = enemy_footman_unit.getYPosition();
-
-            // find our footman's position on map
-            int player_x = player_footman_unit.getXPosition();
-            int player_y = player_footman_unit.getYPosition();
-
-            // if enemy is blocking our path (enemy in a 7x7 square around our foot man) 
-            // then the agent have to replan.
-			for (int i = player_x - 3; i <= player_y + 3; i++)
-				for (int j = player_y - 3; j <= player_x + 3; j++)
-    				if (enemy_x == i && enemy_y == j)
-    					return true;
-		}
-    	
+    	// Replan if the position of the enemy footman is on the path of our footman
+    	for (MapLocation position : currentPath){
+    		if (enemyFootmanPosition.equals(position)){
+    			return true;
+    		}
+    	}
         return false;
     }
 
@@ -284,14 +312,11 @@ public class AstarAgent extends Agent {
 
         return AstarSearch(startLoc, goalLoc, state.getXExtent(), state.getYExtent(), footmanLoc, resourceLocations);
     }
+    
     /**
      * This is the method you will implement for the assignment. Your implementation
      * will use the A* algorithm to compute the optimum path from the start position to
      * a position adjacent to the goal position.
-     *
-     * Therefore your you need to find some possible adjacent steps which are in range 
-     * and are not trees or the enemy footman.
-     * Hint: Set<MapLocation> resourceLocations contains the locations of trees
      *
      * You will return a Stack of positions with the top of the stack being the first space to move to
      * and the bottom of the stack being the last space to move to. If there is no path to the townhall
@@ -333,144 +358,135 @@ public class AstarAgent extends Agent {
      * @param resourceLocations Set of positions occupied by resources
      * @return Stack of positions with top of stack being first move in plan
      */
-    private Stack<MapLocation> AstarSearch(MapLocation start, MapLocation goal, int xExtent, int yExtent, MapLocation enemyFootmanLoc, Set<MapLocation> resourceLocations)
+    private Stack<MapLocation> AstarSearch(MapLocation start, MapLocation goal, int xExtent, int yExtent, 
+    		MapLocation enemyFootmanLoc, Set<MapLocation> resourceLocations)
     {
-    	// a boolean flag to check if the goal is reached
-    	boolean goal_reached = false;
+    	// Open list
+    	ArrayList<MapLocation> openList = new ArrayList<MapLocation>();
+    	// Closed list
+    	ArrayList<MapLocation> closedList = new ArrayList<MapLocation>();
     	
-    	// a variable to keep track of the current position of the footman
-    	MapLocation current_position = start;
+    	// Begin exploration
+    	closedList.add(enemyFootmanLoc);
+    	// Add the starting location to the open list and empty the closed list
+    	openList.add(start);
+    	// Sort the open list to determine the order of removal from the open list
+    	// Sort the open list in ascending order to create a stack that traces the
+    	// path from the goal back to the start
+    	Collections.sort(openList);
     	
-    	// a 2-D boolean array to keep track of whether there is a resouce at a position
-    	boolean[][] resource_existence = new boolean[xExtent][yExtent];
-    	for (MapLocation resourceLocation : resourceLocations) 
-    	{
-    		resource_existence[resourceLocation.x][resourceLocation.y] = true;
+    	// While the open list is not empty 
+    	while (!openList.isEmpty()) {
+    		
+    		// Test if the current position is already the goal position
+    		MapLocation currentPosition = openList.get(0);
+    		if (currentPosition.equals(goal)) {
+    			break;
+    		}
+    		
+    		// Move this node from open list to closed list
+    		openList.remove(currentPosition);
+    		closedList.add(currentPosition);
+    		
+    		// Look at every next potential positions to get to from the current position
+    		ArrayList<MapLocation> potentialPositions = calculateSurroundingPositions(currentPosition, xExtent, yExtent, resourceLocations);
+    		for (MapLocation potentialPosition : potentialPositions) {
+    			
+    			// Calculate the path cost of reaching the potential position
+    			// Assuming the movement cost is just 1 and remain the same for all potential positions
+    			float checkCost = currentPosition.cost + 1;
+    			
+    			// If the cost is less than the cost known for this position, remove from list
+    			if (checkCost < potentialPosition.cost) {
+    				if (openList.contains(potentialPosition)) {
+    					openList.remove(potentialPosition);
+    				}
+    				if (closedList.contains(potentialPosition)) {
+    					closedList.remove(potentialPosition);
+    				}
+    			}
+    			
+    			// If the location is not in the open or closed list then
+    			// (This part of code is also used to record better cost of already visited positions)
+    			if (!openList.contains(potentialPosition) && !closedList.contains(potentialPosition)) {
+    				// Record the cost
+    				potentialPosition.cost = checkCost;
+    				// Record the heuristic value
+    				potentialPosition.heuristic = Helper.heuristicCalculation(currentPosition, goal);
+    				// Add potential position to open list
+    				openList.add(potentialPosition);
+    				// Set parent to current position
+    				potentialPosition.cameFrom = currentPosition;
+    				// Sort the open list again to maintain the removal order
+    				Collections.sort(openList);
+    			}
+    		}
+    	}
+    	    	
+    	// Check if the goal has a parent node
+    	if (openList.get(0).cameFrom == null) {
+    		return null;
     	}
     	
-    	// open list and closed list for AstarSearch
-        Stack<MapLocation> open_list = new Stack<MapLocation>();
-        Stack<MapLocation> closed_list = new Stack<MapLocation>();
-        
-        // stack to keep track of optimal path towards the goal
-        Stack<MapLocation> goal_path = new Stack<MapLocation>();
-        
-        // begin exploration of result path
-        open_list.add(start);
-        do {
-        	closed_list.add(open_list.pop());
-        	
-        	// an array to store surrounding positions of the current position
-        	// these are the potential moves for the next move of our footman
-        	MapLocation[] potential_moves = calculateSurroundingPositions(current_position);
-        	
-        	// variable to hold value of heuristic function
-        	float heuristic_holder = Float.MAX_VALUE;
-        	
-            // variable to hold value for best moves (resulted based on calculation of heuristic value)
-        	// start with the first location in our array of potential moves
-            MapLocation heuristic_move = potential_moves[0];
-            
-            // go over each move in the potential moves array to find the best move
-            for (MapLocation potential_move : potential_moves) 
-            {
-            	// check if a move is legitimate
-            	if (Helper.isPositionValid(potential_move, xExtent, yExtent) && 
-            			Helper.isPositionEmpty(potential_move, enemyFootmanLoc, resource_existence)) {
-            		//check if a move is yet to be explored
-            		if (!closed_list.contains(potential_move)) {
-            			// add the potential move to open list
-            			open_list.add(potential_move);
-            			// calculate the heuristic distance (cost) of this potential move
-                        float potential_move_heuristic = Helper.heuristicCalculation(potential_move, goal);
-                        potential_move.cost = potential_move_heuristic;
-                        
-                        // update the heuristic value and heuristic move if possible
-                        if (potential_move_heuristic < heuristic_holder) {
-                            heuristic_holder = potential_move_heuristic;
-                            heuristic_move = potential_move;
-                        }
-                        
-                        // add potential move to close list.
-                        closed_list.add(potential_move);
-            		}
-            	}
-            }
-            
-            // clear open list for next evaluation
-            open_list.clear();
-            // add the new best position to open list
-            open_list.add(heuristic_move);
-            // move to the new best position
-            current_position = heuristic_move;
-
-            // check if the goal has been reached
-            if (Helper.isSamePosition(heuristic_move, goal)) {
-                goal_reached = true;
-            } else {
-            	// if not yet reached the goal, add this move to the goal path.
-                goal_path.add(heuristic_move); 
-            }
-        } // repeat until the goal is reached or until all alternative is already considered
-        while (!goal_reached && !open_list.isEmpty());
-        
-        // Get the final node in the goal path to test
-        MapLocation test = goal_path.pop();
-        // Test if the end of our goal path is next to the goal node, if not close program
-        if (Helper.heuristicCalculation(test, goal) != 1) {
+    	// Get the final node in the open list to test
+        MapLocation test = openList.get(0);
+        // Test if the end of our goal path is not the goal position, if not close program
+        if (Helper.heuristicCalculation(test, goal) != 0) {
         	System.out.println("No available path.");
     		System.exit(0);
     		return null;
         }
         
-        // Add the test node back to the goal path if it is next to the goal node
-        goal_path.add(test);
-
-        // create a stack to keep track of the actual moves to make in reality
-        Stack<MapLocation> result = new Stack<MapLocation>();
-		while (!goal_path.isEmpty()) {
-			result.push(goal_path.pop());
-		}    
-            	
-        return result;
+    	// Create a stack to keep track of the movement of the footman in reality
+    	Stack<MapLocation> pathOfFootman = new Stack<MapLocation>();
+    	
+    	// While the current node does not equal start we retrace the open list from the goal back to the start
+    	MapLocation retrace = openList.get(0).cameFrom;
+    	while (!retrace.equals(start)) {
+    		pathOfFootman.push(retrace);
+    		retrace = retrace.cameFrom;
+    	}
+    	
+        return pathOfFootman;
     }
-    
-	/**
-	 * Method to calculate the surrounding positions from any current position
-	 * 
-	 * @param current_position
-	 * @return an array of 8 positions around the current position
-	 */
-	private MapLocation[] calculateSurroundingPositions(MapLocation current_position) {
-		// array of surrounding positions
-		MapLocation[] surrounding_positions = new MapLocation[8];
-
-		// pointer for the surrounding positions array
-		int pointer = 0;
-		/*
-		 * for (int i = current_position.x - 1; i <= current_position.x + 1; i++) { for
-		 * (int j = current_position.y - 1; j <= current_position.y + 1; j++) {
-		 * MapLocation new_location = new MapLocation(i, j, current_position, 0); if
-		 * (!is_same_position(new_location, current_position)) {
-		 * surrounding_positions[pointer] = new_location; pointer++; } } }
-		 */
-		for (int i = current_position.x - 1; i <= current_position.x + 1; i++) {
-			surrounding_positions[pointer] = new MapLocation(i, current_position.y + 1, current_position, 0);
-			pointer++;
-			surrounding_positions[pointer] = new MapLocation(i, current_position.y - 1, current_position, 0);
-			pointer++;
-		}
-		surrounding_positions[pointer] = new MapLocation(current_position.x - 1, current_position.y, current_position,
-				0);
-		pointer++;
-		surrounding_positions[pointer] = new MapLocation(current_position.x + 1, current_position.y, current_position,
-				0);
-		pointer++;
-		return surrounding_positions;
-	}
 
     /**
-     * Primitive actions take a direction (e.g. Direction.NORTH, Direction.NORTHEAST, etc)
+     * A method to calculate surrounding positions of a current positions
+     * 
+     * @param currentPosition the current map location
+     * @param xExtent the width of the map
+     * @param yExtent the height of the map
+     * @return an array list 8 surrounding positions
+     */
+    public ArrayList<MapLocation> calculateSurroundingPositions(MapLocation currentPosition, int xExtent,
+    		int yExtent, Set<MapLocation> resourceLocations) {
+    	// Array list of surrounding positions
+    	ArrayList<MapLocation> surroundingPositions = new ArrayList<MapLocation>();
+    	
+    	// Iterates through all potential positions
+    	for (int x = -1; x < 2; x++) {
+    		for (int y = -1; y < 2; y++) {
+    			
+    			// Exclude the current position
+    			if (x == currentPosition.x && y == currentPosition.y) {
+    				continue;
+    			}
+    			
+    			// Compute the location of the potential positions
+    			MapLocation potentialPosition = new MapLocation(currentPosition.x + x, currentPosition.y + y, null, 0);
+    			
+    			// Add the potential move to the array list if it is a valid positions
+    			if (Helper.isPositionValid(currentPosition, potentialPosition, xExtent, yExtent, resourceLocations)) {
+    				surroundingPositions.add(potentialPosition);
+    			}
+    		}
+    	}
+    	
+    	return surroundingPositions;
+    }
+    
+    /**
+     * Primitive actions take a direction (e.g. NORTH, NORTHEAST, etc)
      * This converts the difference between the current position and the
      * desired position to a direction.
      *

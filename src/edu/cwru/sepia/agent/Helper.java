@@ -1,58 +1,43 @@
 package edu.cwru.sepia.agent;
 
+import java.util.Set;
+
 import edu.cwru.sepia.agent.AstarAgent.MapLocation;
 
 public class Helper {
-	// Below are 4 helpers methods to use in support of AstarSearch
+	// Below are 2 helpers methods to use in support of AstarSearch
 
 	/**
 	 * Method to calculate heuristic Chebyshev distance
 	 * 
-	 * @param current_position
-	 * @param goal
+	 * @param currentPosition the current postion on map
+	 * @param goal the position of the tow
 	 * @return the heuristic Chebyshev distance
 	 */
-	public static float heuristicCalculation(MapLocation current_position, MapLocation goal) {
-		return (float) Math.max(Math.abs(goal.x - current_position.x), Math.abs(goal.y - current_position.y));
+	public static float heuristicCalculation(MapLocation currentPosition, MapLocation goal) {
+		return (float) Math.max(Math.abs(goal.x - currentPosition.x), Math.abs(goal.y - currentPosition.y));
 	}
 
-	/**
-	 * Method to check if the location moved to is empty (do not have enemy/resource
-	 * there)
+	/** Method to test if a position is valid to move to
 	 * 
-	 * @param destination
-	 * @param enemy_position
-	 * @param resource_existence --> true if there is a resource at that location,
-	 *                           false otherwise
-	 * @return true if the destination is empty, false otherwise
+	 * @param currentPosition the current position on map 
+	 * @param destination target to move to
+	 * @param xExtent width of map
+	 * @param yExtent length of map
+	 * @param resourceLocations locations of resources
+	 * @return whether we can move to this position
 	 */
-	public static boolean isPositionEmpty(MapLocation destination, MapLocation enemy_position,
-			boolean[][] resource_existence) {
-		return (destination != enemy_position) && (!resource_existence[destination.x][destination.y]);
-	}
-
-	/**
-	 * Method to check if the location moved to is in the map
-	 * 
-	 * @param destination
-	 * @param xExtent
-	 * @param yExtent
-	 * @return true if destination is in the map, false otherwise
-	 */
-	public static boolean isPositionValid(MapLocation destination, int xExtent, int yExtent) {
-		return (destination.x >= 0 && destination.x <= xExtent) && (destination.y >= 0 && destination.y <= yExtent);
-	}
-
-	/**
-	 * Method to check if the current position is the same as the location intent to
-	 * move to
-	 * 
-	 * @param current_position
-	 * @param destination
-	 * @return true if it is the same position, false otherwise
-	 */
-	public static boolean isSamePosition(MapLocation current_position, MapLocation destination) {
-		return (current_position.x == destination.x) && (current_position.y == destination.y);
-	}
+	public static boolean isPositionValid(MapLocation currentPosition, MapLocation destination,
+			int xExtent, int yExtent, Set<MapLocation> resourceLocations) {
+    	// Tests grid bounds to determine if the next location is within the grid and 
+		// not the same as the current location
+    	boolean valid = (destination.x >= 0) && (destination.y >= 0) 
+    			&& (destination.x < xExtent) && (destination.y < yExtent)
+    			&& ((currentPosition.x != destination.x) || (currentPosition.y != destination.y));
+    	if (resourceLocations.contains(destination)){
+    		return false;
+    	}
+    	return valid;
+    }
 
 }
