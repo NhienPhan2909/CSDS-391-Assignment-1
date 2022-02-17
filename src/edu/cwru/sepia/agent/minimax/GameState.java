@@ -399,21 +399,34 @@ public class GameState {
 	 * for each possible combination of actions for a pair of footmen or archers
 	 */
 	private List<Map<Integer, Action>> enumerateActionCombinations(List<List<Action>> allActions) {
+		// Create a list of maps - each map contains combination of actions for each unit
 		List<Map<Integer, Action>> actionMaps = new ArrayList<Map<Integer, Action>>();
+		// return if the input action list is empty
 		if (allActions.isEmpty()) {
 			return actionMaps;
 		}
+		// Get the list of actions for the first unit
 		List<Action> actionsForFirstGameUnit = allActions.get(0);
+		// Check every actions of the first unit
 		for (Action actionForGameUnit : actionsForFirstGameUnit) {
+			// If there is only one action action in the input list
 			if (allActions.size() == 1) {
+				// create a new map for actions of the unit
 				Map<Integer, Action> actionMap = new HashMap<Integer, Action>();
+				// add the action to the action map
 				actionMap.put(actionForGameUnit.getUnitId(), actionForGameUnit);
+				// add the action map to the list of maps
 				actionMaps.add(actionMap);
 			} else {
+				// check all actions for the other units
 				for (Action actionForOtherGameUnit : allActions.get(1)) {
+					// create an action map to contain actions of each unit
 					Map<Integer, Action> actionMap = new HashMap<Integer, Action>();
+					// add the action of the first unit to the action map
 					actionMap.put(actionForGameUnit.getUnitId(), actionForGameUnit);
+					// add the action of the other units to the map
 					actionMap.put(actionForOtherGameUnit.getUnitId(), actionForOtherGameUnit);
+					// add the action map to the list of maps
 					actionMaps.add(actionMap);
 				}
 			}
@@ -426,12 +439,17 @@ public class GameState {
 	 * generate the GameStateChild for each Map
 	 */
 	private List<GameStateChild> enumerateChildrenFromActionMaps(List<Map<Integer, Action>> actionMaps) {
+		// Create a list of game state child to keep track of the children states
 		List<GameStateChild> children = new ArrayList<GameStateChild>(25);
+		// check the map of each unit in the list of action maps 
 		for (Map<Integer, Action> actionMap : actionMaps) {
+			// Create a game state child
 			GameState child = new GameState(this);
+			// Apply each action in the action map of this unit to the new game state
 			for (Action action : actionMap.values()) {
 				child.applyAction(action);
 			}
+			// add this new game state to the list of children states
 			children.add(new GameStateChild(actionMap, child));
 		}
 		return children;
@@ -439,18 +457,25 @@ public class GameState {
 
 	/**
 	 * Applies a given action to this GameState
-	 * 
-	 * @param action either a move or an attack
+	 * @param action: move or attack
 	 */
 	private void applyAction(Action action) {
+		// if it is a move
 		if (action.getType().name().equals(ACTION_MOVE_NAME)) {
+			// Create a directed action for this action
 			DirectedAction directedAction = (DirectedAction) action;
+			// Execute the directed action - move the unit to the new destination
 			this.GameMap.moveGameUnit(directedAction.getUnitId(), directedAction.getDirection().xComponent(),
 					directedAction.getDirection().yComponent());
-		} else {
+		} // if it is an attack
+		else {
+			// Create a targeted action
 			TargetedAction targetedAction = (TargetedAction) action;
+			// Get the attacking unit using the targeted action
 			GameUnit attacker = this.GameMap.getGameUnit(targetedAction.getUnitId());
+			// Get the attacked unit using the targeted action
 			GameUnit defender = this.GameMap.getGameUnit(targetedAction.getTargetId());
+			// Execute the attack
 			this.GameMap.attackGameUnit(attacker, defender);
 		}
 	}
