@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<state xExtent="25" yExtent="19" nextTargetID="3" nextTemplateID="66" fogOfWar="false">
+<state xExtent="25" yExtent="19" nextTargetID="5" nextTemplateID="66" fogOfWar="false">
     <player>
         <ID>0</ID>
-        <unit>
-            <ID>1</ID>
-            <currentHealth>106</currentHealth>
-            <xPosition>1</xPosition>
-            <yPosition>9</yPosition>
-            <templateID>25</templateID>
-            <cargoAmount>0</cargoAmount>
-            <progressAmount>0</progressAmount>
-        </unit>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <ID>0</ID>
             <foodCost>0</foodCost>
@@ -518,7 +509,7 @@
             <piercingAttack>6</piercingAttack>
             <range>4</range>
             <armor>0</armor>
-            <sightRange>5</sightRange>
+            <sightRange>40</sightRange>
             <canGather>false</canGather>
             <canBuild>false</canBuild>
             <canMove>true</canMove>
@@ -577,7 +568,7 @@
             <piercingAttack>3</piercingAttack>
             <range>1</range>
             <armor>2</armor>
-            <sightRange>5</sightRange>
+            <sightRange>4</sightRange>
             <canGather>false</canGather>
             <canBuild>false</canBuild>
             <canMove>true</canMove>
@@ -769,11 +760,20 @@
             <quantity>0</quantity>
             <type>WOOD</type>
         </resourceAmount>
-        <supply>1</supply>
+        <supply>0</supply>
         <supplyCap>0</supplyCap>
     </player>
     <player>
         <ID>1</ID>
+        <unit>
+            <ID>3</ID>
+            <currentHealth>50</currentHealth>
+            <xPosition>8</xPosition>
+            <yPosition>11</yPosition>
+            <templateID>55</templateID>
+            <cargoAmount>0</cargoAmount>
+            <progressAmount>0</progressAmount>
+        </unit>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <ID>64</ID>
             <foodCost>0</foodCost>
@@ -1384,7 +1384,7 @@
             <piercingAttack>3</piercingAttack>
             <range>1</range>
             <armor>2</armor>
-            <sightRange>5</sightRange>
+            <sightRange>4</sightRange>
             <canGather>false</canGather>
             <canBuild>false</canBuild>
             <canMove>true</canMove>
@@ -1532,7 +1532,7 @@
             <quantity>0</quantity>
             <type>WOOD</type>
         </resourceAmount>
-        <supply>0</supply>
+        <supply>1</supply>
         <supplyCap>0</supplyCap>
     </player>
     <resourceNode>
@@ -1648,10 +1648,66 @@
         <amountRemaining>100</amountRemaining>
     </resourceNode>
     <resourceNode>
-        <ID>1669</ID>
+        <ID>1678</ID>
         <type>TREE</type>
-        <xPosition>11</xPosition>
-        <yPosition>10</yPosition>
+        <xPosition>10</xPosition>
+        <yPosition>6</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1686</ID>
+        <type>TREE</type>
+        <xPosition>10</xPosition>
+        <yPosition>7</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1694</ID>
+        <type>TREE</type>
+        <xPosition>10</xPosition>
+        <yPosition>8</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1702</ID>
+        <type>TREE</type>
+        <xPosition>10</xPosition>
+        <yPosition>9</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1710</ID>
+        <type>TREE</type>
+        <xPosition>12</xPosition>
+        <yPosition>6</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1718</ID>
+        <type>TREE</type>
+        <xPosition>12</xPosition>
+        <yPosition>7</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1726</ID>
+        <type>TREE</type>
+        <xPosition>12</xPosition>
+        <yPosition>8</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1734</ID>
+        <type>TREE</type>
+        <xPosition>12</xPosition>
+        <yPosition>9</yPosition>
         <initialAmount>0</initialAmount>
         <amountRemaining>100</amountRemaining>
     </resourceNode>
@@ -1784,10 +1840,26 @@
         <amountRemaining>100</amountRemaining>
     </resourceNode>
     <resourceNode>
-        <ID>1805</ID>
+        <ID>1814</ID>
+        <type>TREE</type>
+        <xPosition>4</xPosition>
+        <yPosition>13</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1822</ID>
+        <type>TREE</type>
+        <xPosition>4</xPosition>
+        <yPosition>14</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1830</ID>
         <type>TREE</type>
         <xPosition>5</xPosition>
-        <yPosition>13</yPosition>
+        <yPosition>14</yPosition>
         <initialAmount>0</initialAmount>
         <amountRemaining>100</amountRemaining>
     </resourceNode>
@@ -1872,10 +1944,26 @@
         <amountRemaining>100</amountRemaining>
     </resourceNode>
     <resourceNode>
-        <ID>1893</ID>
+        <ID>1918</ID>
+        <type>TREE</type>
+        <xPosition>19</xPosition>
+        <yPosition>13</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1926</ID>
+        <type>TREE</type>
+        <xPosition>19</xPosition>
+        <yPosition>14</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>1934</ID>
         <type>TREE</type>
         <xPosition>18</xPosition>
-        <yPosition>13</yPosition>
+        <yPosition>14</yPosition>
         <initialAmount>0</initialAmount>
         <amountRemaining>100</amountRemaining>
     </resourceNode>
@@ -1916,14 +2004,6 @@
         <type>TREE</type>
         <xPosition>10</xPosition>
         <yPosition>15</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1941</ID>
-        <type>TREE</type>
-        <xPosition>10</xPosition>
-        <yPosition>16</yPosition>
         <initialAmount>0</initialAmount>
         <amountRemaining>100</amountRemaining>
     </resourceNode>

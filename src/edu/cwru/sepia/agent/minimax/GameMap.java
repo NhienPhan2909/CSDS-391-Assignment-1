@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 // A helper class with helper methods to use for easier manipulation of units in the game
 public class GameMap {
 	// A 2D array that stores the units at their location on the map
-	private Unit[][] GameMap;
+	public Unit[][] GameMap;
 	// A map contains all game units (footmen and archers on both sides)
 	private Map<Integer, GameUnit> GameUnits = new HashMap<Integer, GameUnit>(4);
 	// An array list contains all game units belong to our side
@@ -28,6 +28,10 @@ public class GameMap {
 		GameMap = new Unit[width][height];
 		this.width = width;
 		this.height = height;
+	}
+	
+	public Unit[][] getUnitMatrix() {
+		return GameMap;
 	}
 
 	/**

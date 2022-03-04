@@ -86,41 +86,17 @@ public class GameState {
 			return this.utility;
 		}
 
-		// Calculate utility of the state based on the number allies still alive
-		//this.utility += getAlliesUtility();
-		// Calculate utility of the state based on the number enemies still alive
-		//this.utility += getEnemiesUtility();
 		// Calculate utility of the state based on the cumulative health our footmen
 		// still have
 		this.utility += getHealthUtility()*0.25;
 		// Calculate utility of the state based on cumulative damaged dealt to enemies
 		this.utility += getDamageUtility()*0.25;
-		// Calculate utility of the state based on the possibility of attack
-		//this.utility += getCanAttackUtility();
 		// Calculate utility of the state based on the probability that our footmen can
 		// avoid obstacles (resources)
 		this.utility += getPositionUtility()*0.5;
 		// Modify the utility boolean flag
 		this.utilityCalculated = true;
 		return this.utility;
-	}
-
-	/**
-	 * @return: the number of footmen still alive or the Double.NEGATIVE_INFINITY if
-	 *          all footmen are dead
-	 */
-	private double getAlliesUtility() {
-		return this.GameMap.getAliveAllies().isEmpty() ? Double.NEGATIVE_INFINITY
-				: this.GameMap.getAliveAllies().size();
-	}
-
-	/**
-	 * @return the number of archers still alive or the Double.POSITIVE_INFINITY if
-	 *         all archers are dead
-	 */
-	private double getEnemiesUtility() {
-		return this.GameMap.getAliveEnemies().isEmpty() ? Double.POSITIVE_INFINITY
-				: this.GameMap.getAliveEnemies().size();
 	}
 
 	/**
@@ -148,20 +124,6 @@ public class GameState {
 		for (GameUnit GameUnit : this.GameMap.getAliveEnemies()) {
 			// add the amount of damage each archer has endured to the utility
 			utility += GameUnit.getMaxHealth() - GameUnit.getCurrentHealth();
-		}
-		return utility;
-	}
-
-	/**
-	 * @return the number of enemies the footmen can attack
-	 */
-	private double getCanAttackUtility() {
-		// utility variable
-		double utility = 0.0;
-		// check each footman that is still alive
-		for (GameUnit ally : this.GameMap.getAliveAllies()) {
-			// add the number of enemies each footman can attack to the utility
-			utility += this.GameMap.canBeUnderAttackUnits(ally).size();
 		}
 		return utility;
 	}
