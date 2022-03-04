@@ -66,6 +66,11 @@ public class PEAgent extends Agent {
 
 		return middleStep(stateView, historyView);
 	}
+	
+	// Get the plan of this PEAgent
+	public Stack<StripsAction> getPlan() {
+		return this.plan;
+	}
 
 	/**
 	 * This is where you will read the provided plan and execute it. If your plan is
@@ -105,7 +110,7 @@ public class PEAgent extends Agent {
 		int previousTurnNumber = stateView.getTurnNumber() - 1;
 		// If there is previous turn, then add the next action to the action map
 		if (previousTurnNumber < 0) {
-			addNextAction(actionMap, stateView);
+			Helper.addNextAction(actionMap, stateView, this);
 			return actionMap;
 		}
 
@@ -124,93 +129,20 @@ public class PEAgent extends Agent {
 				// Get the result of the last action committed by the same unit
 				ActionResult lastActionResult = previousActions.get(nextAction.getUnitID());
 				// If last action failed
-				if (lastActionFailed(lastActionResult)) {
+				if (Helper.isLastActionFailure(lastActionResult)) {
 					actionMap.put(lastActionResult.getAction().getUnitId(), lastActionResult.getAction());
 				} // Set the boolean flag for finished to true if the peasant unavailable 
 				  // or if the next state is to build more peasant
-				if (!peasantAvailable(actionMap, nextAction, lastActionResult) || waitOnBuild(actionMap, nextAction)) {
+				else if (!Helper.canPeasantDoAction(actionMap, nextAction, lastActionResult) 
+						|| Helper.isBuildNext(actionMap, nextAction)) {
 					finished = true;
 				} else {
 					// Add first action in plan to the action map
-					addNextAction(actionMap, stateView);
+					Helper.addNextAction(actionMap, stateView, this);
 				}
 			}
 		}
 		return actionMap;
-	}
-
-	// 4 HELPER METHODS FOR MIDDLESTEP
-
-	/**
-	 * Check if the last action fail
-	 * 
-	 * @param lastActionResult the result of the last action
-	 * @return true if last action fail, false otherwise
-	 */
-	private boolean lastActionFailed(ActionResult lastActionResult) {
-		// Check if there is a result for the last action and whether the last action
-		// failed
-		return lastActionResult != null && lastActionResult.getFeedback() == ActionFeedback.FAILED;
-	}
-
-	/**
-	 * Check if a peasant is available
-	 * @param actionMap        the map of SEPIA actions
-	 * @param nextAction       the next action to consider
-	 * @param lastActionResult the result of the last action
-	 * @return true if a peasant is available, false otherwise
-	 */
-	private boolean peasantAvailable(Map<Integer, Action> actionMap, StripsAction nextAction,
-			ActionResult lastActionResult) {
-		// Check if the peasant ID is in the actions map, if there is a last action
-		// result, and if the last action
-		// result is incomplete.
-		return !actionMap.containsKey(nextAction.getUnitID()) && !(lastActionResult != null
-				&& lastActionResult.getFeedback().ordinal() == ActionFeedback.INCOMPLETE.ordinal());
-	}
-
-	/**
-	 * Check if the next action is to build more peasants
-	 * @param actionMap  the map of SEPIA actions
-	 * @param nextAction the next action to consider
-	 * @return true if the next action is to build more peasants, false otherwise
-	 */
-	private boolean waitOnBuild(Map<Integer, Action> actionMap, StripsAction nextAction) {
-		// Check if the unit apply the action is townhall and whether the map is empty
-		return nextAction.getUnitID() == GameState.TOWN_HALL_ID && !actionMap.isEmpty();
-	}
-
-	/**
-	 * Add first STRIPS action in plan as a SEPIA action to the SEPIA action map
-	 * @param actionMap the map of SEPIA actions
-	 * @param state     the current state that has this action map
-	 */
-	private void addNextAction(Map<Integer, Action> actionMap, State.StateView state) {
-		// Get the first STRIPS action from the plan
-		StripsAction action = plan.pop();
-		// A variable for the SEPIA action
-		Action sepiaAction = null;
-		// If the STRIPS action is a directed action
-		if (!action.isDirectedAction()) {
-			// Create a blank SEPIA action
-			sepiaAction = action.createSepiaAction(null);
-		} else {
-			// Get the peasant that may apply this action
-			UnitView peasant = state.getUnit(action.getUnitID());
-			// If there is no peasant then push add the STRIPS action to the plan
-			if (peasant == null) {
-				plan.push(action);
-				return;
-			}
-			// Get the position of the peasant
-			Position peasantPosition = new Position(peasant.getXPosition(), peasant.getYPosition());
-			// Get the position where the peasant aim to apply the action
-			Position destinationPosition = action.getPositionForDirection();
-			// Create the SEPIA action
-			sepiaAction = action.createSepiaAction(peasantPosition.getDirection(destinationPosition));
-		}
-		// Add the SEPIA action to the action map using the unit ID as key for mapping
-		actionMap.put(sepiaAction.getUnitId(), sepiaAction);
 	}
 
 	/**
@@ -236,9 +168,10 @@ public class PEAgent extends Agent {
 	 * @param action StripsAction
 	 * @return SEPIA representation of same action
 	 */
-	/*private Action createSepiaAction(StripsAction action) {
+	// Leave as blank since the creation SEPIA action has been handled directly in each action class
+	private Action createSepiaAction(StripsAction action) {
 		return null;
-	}*/
+	}
 
 	@Override
 	public void terminalStep(State.StateView stateView, History.HistoryView historyView) {

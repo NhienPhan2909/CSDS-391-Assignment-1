@@ -38,7 +38,7 @@ public class Peasant {
 	 * 
 	 * @param id new ID of the peasant
 	 */
-	public void setId(int id) {
+	public void setID(int id) {
 		this.id = id;
 	}
 
@@ -119,7 +119,7 @@ public class Peasant {
 	 * @return true if the peasant is carrying any resources, false otherwise
 	 */
 	public boolean isCarry() {
-		return hasGold() || hasWood();
+		return goldAmount > 0 || woodAmount > 0;
 	}
 	
 	/**

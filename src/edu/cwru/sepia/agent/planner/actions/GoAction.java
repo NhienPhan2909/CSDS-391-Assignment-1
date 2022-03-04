@@ -14,7 +14,7 @@ public class GoAction implements StripsAction{
 	Position position;
 	
 	// Constructor
-	public GoAction(Peasant peasant, Position destination) {
+	public GoAction(Peasant peasant, Position position) {
 		this.peasant = peasant;
 		this.position = position;
 	}
@@ -28,7 +28,7 @@ public class GoAction implements StripsAction{
 	@Override
 	public void applyAction(GameState state) {
 		// Move the peasant to the target position
-		state.applyGoAction(this, peasant.getID(), position);
+		state.applyMoveAction(this, peasant.getID(), position);
 	}
 
 	@Override
