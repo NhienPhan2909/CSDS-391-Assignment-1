@@ -54,7 +54,7 @@ public interface StripsAction {
     }
 
 	/**
-	 * Apply a new action to a game state
+	 * Apply a SEPIA action to a game state
 	 * @param state State to apply action to
 	 */
     public default void applyAction(GameState state) {};
@@ -76,7 +76,7 @@ public interface StripsAction {
     }
 	
 	/**
-	 * Create an action in a direction
+	 * Create a SEPIA action in a direction
 	 * @param direction to apply an action
 	 * @return an action in this direction
 	 */
