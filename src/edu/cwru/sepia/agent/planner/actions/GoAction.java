@@ -28,7 +28,7 @@ public class GoAction implements StripsAction{
 	@Override
 	public void applyAction(GameState state) {
 		// Move the peasant to the target position
-		state.applyMoveAction(this, peasant.getID(), position);
+		state.applyGoAction(this, peasant.getID(), position);
 	}
 
 	@Override
@@ -47,6 +47,15 @@ public class GoAction implements StripsAction{
 	public double getCost() {
 		// The cost of a move is the Chebyshev distance between the current and target positions
 		return peasant.getPosition().chebyshevDistance(position) - 1;
+	}
+	
+	/**
+	 *  A helper method to help savePlan() in PlannerAgent
+	 *  Return the string with the ID of peasant which move, the X and Y position of the target position
+	 */
+	@Override
+	public String toString() {
+		return "GoAction(" + peasant.getID() +", " + position.x + ", " + position.y + ")";
 	}
 
 }

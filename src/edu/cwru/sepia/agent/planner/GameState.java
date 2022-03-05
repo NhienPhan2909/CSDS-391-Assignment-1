@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import edu.cwru.sepia.agent.planner.actions.BuildAction;
 import edu.cwru.sepia.agent.planner.actions.DepositAction;
 import edu.cwru.sepia.agent.planner.actions.GoAction;
 import edu.cwru.sepia.agent.planner.actions.HarvestAction;
@@ -56,23 +55,18 @@ public class GameState implements Comparable<GameState> {
 	
 	// A boolean flag to determine if this state can build peasant
 	private static boolean canBuildPeasants;
-	// The ID for the next peasant created
-	private int nextID = 0;
-	// Amount of gold to build a peasant
-	private static final int REQUIRED_GOLD_TO_BUILD = 400;
-	// Maximum number of peasants
-	private static final int MAX_NUM_PEASANTS = 3;
-	// A number use as weight in case build new peasants for heuristic calculation 
-	private static final int BUILD_PEASANT_OFFSET = 20000;
-
+	
 	/**
-	 * 
-	 * @param state The current stateview at the time the plan is being created
-	 * @param playernum The player number of agent that is planning
-	 * @param requiredGold The goal amount of gold (e.g. 200 for the small scenario)
-	 * @param requiredWood The goal amount of wood (e.g. 200 for the small scenario)
-	 * @param buildPeasants True if the BuildPeasant action should be consIDered
-	 */
+     * Construct a GameState from a stateview object. This is used to construct the initial search node. All other
+     * nodes should be constructed from the another constructor you create or by factory functions that you create.
+     * This constructor is only called once when the game begin to run.
+     *
+     * @param state The current stateview at the time the plan is being created
+     * @param playernum The player number of agent that is planning
+     * @param requiredGold The goal amount of gold (e.g. 200 for the small scenario)
+     * @param requiredWood The goal amount of wood (e.g. 200 for the small scenario)
+     * @param buildPeasants True if the BuildPeasant action should be considered
+     */
 	public GameState(State.StateView state, int playernum, int requiredGold, int requiredWood, boolean buildPeasants) {
 		// Set the target amount of gold and wood as well as the build peasant flag
 		GameState.requiredGold = requiredGold;
@@ -112,8 +106,6 @@ public class GameState implements Comparable<GameState> {
 				this.peasants.put(e.getID(), new Peasant(e.getID(), TOWN_HALL_POSITION));
 			}
 		});
-		// Calculate the ID for the next peasant that might be created
-		this.nextID = 1 + this.peasants.size() + this.resources.size();
 	}
 
 	/**
@@ -126,8 +118,6 @@ public class GameState implements Comparable<GameState> {
 		// Set the extracted amount of gold and wood
 		this.extractedGold = state.extractedGold;
 		this.extractedWood = state.extractedWood;
-		// Set the ID for the next peasant that might be created
-		this.nextID = state.nextID;
 		// Set the cost of this state
 		this.cost = state.cost;
 		// Copy the map of peasants from the parameter state to this state
@@ -224,30 +214,32 @@ public class GameState implements Comparable<GameState> {
 	}
 
 	/**
-	 * Check if already reach the goal
-	 * @return true if the goal conditions are met in this instance of game state.
-	 */
+     * Unlike in the first A* assignment there are many possible goal states. As long as the wood and gold requirements
+     * are met the peasants can be at any location and the capacities of the resource locations can be anything. Use
+     * this function to check if the goal conditions are met and return true if they are.
+     *
+     * @return true if the goal conditions are met in this instance of game state.
+     */
 	public boolean isGoal() {
 		// Compare the extracted amount of gold and wood to the required amount
 		return extractedGold >= requiredGold && extractedWood >= requiredWood;
 	}
 
 	/**
-	 * Adds for the amount of resources still needing to be collected.
-	 * Adds for not having peasants
-	 * Adds for not being near resources if not holding anything
-	 * Adds for not being near town all if holding something
-	 * Subtracts for if you can make peasants or if you are next to a resource and not holding anything
-	 * 
-	 * @return The value estimated remaining cost to reach a goal state from this state.
-	 */
+     * Write your heuristic function here. Remember this must be admissible for the properties of A* to hold. If you
+     * can come up with an easy way of computing a consistent heuristic that is even better, but not strictly necessary.
+     *
+     * Add a description here in your submission explaining your heuristic.
+     *
+     * @return The value estimated remaining cost to reach a goal state from this state.
+     */
 	public double heuristic() {
 		// If the heuristic for this state is already calculated then return the heuristic
 		if(this.heuristic != 0) {
 			return heuristic;
 		}
 		
-		// If the one resource is extracted more than other 
+		// If the one resource is extracted more than other (minimize over-reach to improve runtime)
 		if(extractedWood > extractedGold || extractedWood < extractedGold) {
 			// Increase the heuristic by the amount resource that a peasant can extract each time
 			this.heuristic += 100;
@@ -283,162 +275,145 @@ public class GameState implements Comparable<GameState> {
 				this.heuristic += 100;
 			}
 		}
-		
-		if(canBuildPeasants) {
-			this.heuristic += (MAX_NUM_PEASANTS - this.peasants.size()) * BUILD_PEASANT_OFFSET;
-			if(canBuild()){
-				this.heuristic -= BUILD_PEASANT_OFFSET;
-			}
-		}
 		return this.heuristic;
 	}
 
 	/**
-	 * Cost is updated every time a move is applied.
-	 *
-	 * @return The current cost to reach this goal
-	 */
+    *
+    * Write the function that computes the current cost to get to this node. This is combined with your heuristic to
+    * determine which actions/states are better to explore.
+    *
+    * @return The current cost to reach this goal
+    */
 	public double getCost() {
 		return this.cost;
 	}
 
-	public boolean canBuild() {
-		return extractedGold >= REQUIRED_GOLD_TO_BUILD && this.peasants.size() < MAX_NUM_PEASANTS;
-	}
-
+	/**
+     * The branching factor of this search graph are much higher than the planning. Generate all of the possible
+     * successor states and their associated actions in this method.
+     *
+     * @return A list of the possible successor states and their associated actions
+     */
 	public List<GameState> generateChildren() {
-		List<GameState> children = new ArrayList<GameState>();
-		if(canBuildPeasants && this.canBuild()) {
-			GameState buildChild = new GameState(this);
-			BuildAction action = new BuildAction(TOWN_HALL_ID, PEASANT_TEMPLATE_ID);
-			if(action.preconditionsMet(buildChild)) {
-				action.apply(buildChild);
-				children.add(buildChild);
-			}
-			return children;
-		}
-
-		GameState child = new GameState(this);
-		for(Peasant peasant : this.peasants.values()) {			
-			if(peasant.isCarry()) {
-				if(peasant.getPosition().equals(TOWN_HALL_POSITION)) {
-					DepositAction action = new DepositAction(peasant);
-					if(action.preconditionsMet(child)) {
-						action.apply(child);
-					}
-				} else {
-					GoAction action = new GoAction(peasant, TOWN_HALL_POSITION);
-					if(action.preconditionsMet(child)) {
-						action.apply(child);
-					}
-				}
-			} else if(peasantCanHarvest(peasant)) {
-				for(Resource resource : this.resources.values()) {
-					HarvestAction action = new HarvestAction(peasant, resource);
-					if(action.preconditionsMet(child)) {
-						action.apply(child);
-					}
-				}
-			} else {
-				for(Resource resource : this.resources.values()) {
-					GameState innerChild = new GameState(child);
-					GoAction action = new GoAction(peasant, resource.getPosition());
-					if(action.preconditionsMet(innerChild)) {
-						action.apply(innerChild);
-					}
-					for(Peasant other : this.peasants.values()) {
-						if(!other.equals(peasant) && !other.isCarry() && !peasantCanHarvest(peasant)) {
-							if(resource.getAmountRemaining() >= EXTRACT_AMOUNT * 2) {
-								GoAction otherAction = new GoAction(other, resource.getPosition());
-								if(otherAction.preconditionsMet(innerChild)) {
-									otherAction.apply(innerChild);
-								}
-							}
-						}
-					}
-					children.add(innerChild);
-				}
-			}
-		}
-		children.add(child);
+		// Create a list of children game states
+		List<GameState> childrenStates = new ArrayList<GameState>();
+		// Create the first child state from the current state
+		GameState childState = new GameState(this);
 		
+		// Go over each peasant
 		for(Peasant peasant : this.peasants.values()) {
-			GameState innerChild = new GameState(this);
-			
-			DepositAction depositAction = new DepositAction(peasant);
-			if(depositAction.preconditionsMet(innerChild)) {
-				depositAction.apply(innerChild);
-			}
-			
-			for(Resource resource : this.resources.values()) {
-				GameState innerInnerChild = new GameState(innerChild);
-				StripsAction action = null;
-				if(peasant.getPosition().equals(resource.getPosition())) {
-					action = new HarvestAction(peasant, resource);
-				} else {
-					action = new GoAction(peasant, resource.getPosition());
+			// If the peasant is carrying resources
+			if(peasant.isCarry()) {
+				// Create a deposit and a go STRIPS actions
+				DepositAction depositAction = new DepositAction(peasant);
+				GoAction goAction = new GoAction(peasant, TOWN_HALL_POSITION);
+				// Apply the deposit action if possible (peasant reach the town hall)
+				if(depositAction.preconditionsMet(childState)) {
+					depositAction.apply(childState);
+				} else { // Apply the go action to go to the town hall
+					goAction.apply(childState);
 				}
-				if(action.preconditionsMet(innerInnerChild)) {
-					action.apply(innerInnerChild);
+			} else if(peasantCanHarvest(peasant)) { // If peasant can harvest resource
+				// Create and apply a harvest action
+				HarvestAction harvestAction = new HarvestAction(peasant, getResourceForPosition(peasant.getPosition()));
+				harvestAction.apply(childState);					
+			} else { // If the peasant is not carrying resources
+				// Check each resource unit
+				for(Resource resource : this.resources.values()) {
+					// Create a child of the current child state
+					GameState grandChildState = new GameState(childState);
+					// Create a go action towards the resource unit
+					GoAction action = new GoAction(peasant, resource.getPosition());
+					// Apply the go action to the grand child state if possible
+					if(action.preconditionsMet(grandChildState)) {
+						action.apply(grandChildState);
+					}
+					// Add this grand child state to the list of children game states
+					childrenStates.add(grandChildState);
 				}
-				children.add(innerInnerChild);
 			}
-			
-			GoAction moveAction = new GoAction(peasant, TOWN_HALL_POSITION);
-			if(moveAction.preconditionsMet(innerChild)) {
-				moveAction.apply(innerChild);
-			}
-			
-			children.add(innerChild);
 		}
+		// Add the child state to the list of children game states
+		childrenStates.add(childState);
 		
-		return children;
+		return childrenStates;
 	}
 
-	public void applyBuildAction(StripsAction action) {
-		this.extractedGold = this.extractedGold - REQUIRED_GOLD_TO_BUILD;
-		Peasant peasant = new Peasant(nextID, new Position(TOWN_HALL_POSITION));
-		nextID++;
-		this.peasants.put(peasant.getID(), peasant);
-	}
-
-	public void applyMoveAction(StripsAction action, int peasantID, Position destination) {
+	/**
+	 * Apply the STRIPS go action to a game state
+	 * @param goAction the STRIPS go action to apply
+	 * @param peasantID the ID of the peasant which do this action
+	 * @param destination the destination to move to
+	 */
+	public void applyGoAction(StripsAction goAction, int peasantID, Position destination) {
 		getSpecificPeasant(peasantID).setPosition(destination);
 	}
 
-	public void applyHarvestAction(StripsAction action, int peasantID, int resourceID) {
+	/**
+	 * Apply the STRIPS harvest action to a game state
+	 * @param harvestAction the STRIPS harvest action to apply
+	 * @param peasantID the ID of the peasant which do this action
+	 * @param resourceID the ID of the resource to be harvested
+	 */
+	public void applyHarvestAction(StripsAction harvestAction, int peasantID, int resourceID) {
+		// Get the resource and peasant with the correct IDs
 		Resource resource = getSpecificResource(resourceID);
 		Peasant peasant = getSpecificPeasant(peasantID);
+		// If resource is gold
 		if(resource.isGold()) {
+			// Adjust the gold amount that the peasant carries
 			peasant.setGoldAmount(Math.min(100, resource.getAmountRemaining()));
+			// Adjust the amount of gold remaining
 			resource.setAmountRemaining(Math.max(0, resource.getAmountRemaining() - 100));
-		} else {
+		} else { // If the resource is wood
+			// Adjust the wood amount that the peasant carries
 			peasant.setWoodAmount(Math.min(100, resource.getAmountRemaining()));
+			// Adjust the amount of gold remaining
 			resource.setAmountRemaining(Math.max(0, resource.getAmountRemaining() - 100));
 		}
 	}
 
-	public void applyDepositAction(StripsAction action, int peasantID) {
+	/**
+	 * Deposit the amount of resource a peasant carries to the town hall
+	 * @param depositAction the STRIP deposit action to apply
+	 * @param peasantID the ID of the peasant which do this action
+	 */
+	public void applyDepositAction(StripsAction depositAction, int peasantID) {
+		// Get the peasant with the correct ID
 		Peasant peasant = getSpecificPeasant(peasantID);
+		// If the peasant is carrying gold
 		if(peasant.hasGold()) {
+			// Increment the amount of extracted gold
 			increaseExtractedGold(peasant.getGoldAmount());
+			// Set the amount of gold the peasant carries back to 0
 			peasant.setGoldAmount(0);
-		} else {
+		} else { // If the peasant is carrying wood
+			// Increment the amount of extracted wood
 			increaseExtractedWood(peasant.getWoodAmount());
+			// Set the amount of wood the peasant carries back to 0
 			peasant.setWoodAmount(0);
 		}
 	}
 	
+	/**
+	 * Add a STRIP action to the plan and add the cost of the action to the overall cost of the plan
+	 * @param action the action to be added
+	 */
 	public void updatePlanAndCost(StripsAction action) {
+		// Add action to the plan
 		plan.add(action);
+		// Increment the cost of the plan
 		this.cost += action.getCost();
 	}
 
 	/**
-	 *
-	 * @param o The other game state to compare
-	 * @return 1 if this state costs more than the other, 0 if equal, -1 otherwise
-	 */
+     * This is necessary to use your state in the Java priority queue. See the official priority queue and Comparable
+     * interface documentation to learn how this function should work.
+     *
+     * @param o The other game state to compare
+     * @return 1 if this state costs more than the other, 0 if equal, -1 otherwise
+     */
 	@Override
 	public int compareTo(GameState o) {
 		if(this.heuristic() > o.heuristic()){
@@ -449,16 +424,12 @@ public class GameState implements Comparable<GameState> {
 		return 0;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + extractedGold;
-		result = prime * result + extractedWood;
-		result = prime * result + ((peasants == null) ? 0 : peasants.hashCode());
-		return result;
-	}
-
+	/**
+     * This will be necessary to use the GameState as a key in a Set or Map.
+     *
+     * @param o The game state to compare
+     * @return True if this state equals the other state, false otherwise.
+     */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -478,5 +449,21 @@ public class GameState implements Comparable<GameState> {
 		} else if (!peasants.equals(other.peasants))
 			return false;
 		return true;
+	}
+	
+	/**
+     * This is necessary to use the GameState as a key in a HashSet or HashMap. Remember that if two objects are
+     * equal they should hash to the same value.
+     *
+     * @return An integer hashcode that is equal for equal states.
+     */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + extractedGold;
+		result = prime * result + extractedWood;
+		result = prime * result + ((peasants == null) ? 0 : peasants.hashCode());
+		return result;
 	}
 }

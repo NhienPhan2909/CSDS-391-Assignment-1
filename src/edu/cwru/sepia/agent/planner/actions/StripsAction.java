@@ -95,4 +95,10 @@ public interface StripsAction {
 	public default double getCost() {
 		return 1;
 	}
+	
+	/**
+	 * A helper method to help savePlan() in PlannerAgent
+	 * @return a string with name of the action, the ID of the peasant which do the action and relevant information
+	 */
+	public String toString();
 }

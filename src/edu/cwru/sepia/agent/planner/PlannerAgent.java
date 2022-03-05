@@ -152,6 +152,7 @@ public class PlannerAgent extends Agent {
 				}
 			});
 		}
+		savePlan(startState.getPlan());
 		return null;
 	}
 

@@ -51,4 +51,17 @@ public class HarvestAction implements StripsAction {
 		// Get the ID of the peasant
 		return peasant.getID();
 	}
+	
+	/**
+	 * A helper method to help savePlan() in PlannerAgent
+	 * Return the string with the ID of peasant which move, the type and amount of resource harvested
+	 */
+	@Override
+	public String toString() {
+		// A constant to keep track the resource amount harvested (peasant always harvest with amount of 100 each time)
+		int amountHarvest = 100;
+		// A variable to keep track the resource type harvested
+		String resourceType = (resource.isGold()) ? "Gold" : "Wood";
+		return "HarvestAction(" + peasant.getID() +", " + resourceType + ", " + amountHarvest + ")";
+	}
 }

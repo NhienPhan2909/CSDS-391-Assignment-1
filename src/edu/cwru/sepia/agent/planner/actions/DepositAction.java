@@ -61,5 +61,17 @@ public class DepositAction implements StripsAction {
 		return peasant.getID();	
 	}
 
-	
+	/**
+	 * A helper method to help savePlan() in PlannerAgent
+	 * Return the string with the ID of peasant which move, the type and amount of resource deposited
+	 */
+	@Override
+	public String toString() {
+		// A constant to keep track the resource amount deposited 
+		// (peasant always harvest with amount of 100 each time so always deposit with amount of 100)
+		int amountDeposit = 100;
+		// A variable to keep track the resource type deposited
+		String resourceType = (peasant.hasGold()) ? "Gold" : "Wood";
+		return "DepositAction(" + peasant.getID() +", " + resourceType + ", " + amountDeposit + ")";
+	}
 }
