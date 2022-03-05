@@ -18,27 +18,21 @@ import edu.cwru.sepia.agent.planner.resources.Wood;
 import edu.cwru.sepia.environment.model.state.State;
 
 public class GameState implements Comparable<GameState> {
-	// ID for peasant unit template
-	public static int PEASANT_TEMPLATE_ID;
 	// Position of town hall in a game state
 	public static Position TOWN_HALL_POSITION;
-	// A string for town hall name to assist constructor later
-	public static final String TOWN_HALL_NAME = "townhall";
 	// The ID of town hall
 	public static int TOWN_HALL_ID;
 	
 	// The amount gold and wood already extracted
 	private int extractedGold = 0;
 	private int extractedWood = 0;
+	// The quantity of resource that a peasant can extract each time
+	private static final int EXTRACT_AMOUNT = 100;
+	
 	// The target amount of gold and wood 
 	private static int requiredGold;
 	private static int requiredWood;
 	
-	// A string for gold mine name to assist constructor later
-	private static final String GOLD_MINE_NAME = "GOLD_MINE";
-	// The quantity of resource that a peasant can extract each time
-	private static final int EXTRACT_AMOUNT = 100; 
-
 	// The cost of a state
 	private double cost = 0;
 	// The heuristic of a state
@@ -80,7 +74,7 @@ public class GameState implements Comparable<GameState> {
 			// Add the resource position to the set of all resources' positions
 			GameState.resourcePositions.add(position);
 			// If the resource is gold
-			if(e.getType().name().equals(GOLD_MINE_NAME)) {
+			if(e.getType().name().equals("GOLD_MINE")) {
 				// Add a new gold unit to map of all resources using the resource ID as the mapping key
 				resources.put(e.getID(), new Gold(e.getID(), e.getAmountRemaining(), position));
 			} else {
@@ -94,13 +88,11 @@ public class GameState implements Comparable<GameState> {
 			// Get the position of the unit
 			Position position = new Position(e.getXPosition(), e.getYPosition());
 			// If the unit is a town hall
-			if(e.getTemplateView().getName().toLowerCase().equals(TOWN_HALL_NAME)) {
+			if(e.getTemplateView().getName().toLowerCase().equals("townhall")) {
 				// Set town hall name and position for this game state
 				GameState.TOWN_HALL_POSITION = position;
 				GameState.TOWN_HALL_ID = e.getID();
-			} else {
-				// Otherwise (the unit is a peasant) set the peasant template ID for this game state
-				GameState.PEASANT_TEMPLATE_ID = e.getTemplateView().getID();
+			} else { // Otherwise (the unit is a peasant) 
 				// Create a peasant at the town hall
 				// Add to the map of all peasants using the peasant ID as the mapping key
 				this.peasants.put(e.getID(), new Peasant(e.getID(), TOWN_HALL_POSITION));
