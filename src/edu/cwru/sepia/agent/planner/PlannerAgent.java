@@ -152,6 +152,7 @@ public class PlannerAgent extends Agent {
 				}
 			});
 		}
+		// Record the plan as a text file
 		savePlan(startState.getPlan());
 		return null;
 	}
