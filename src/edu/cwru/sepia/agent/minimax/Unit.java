@@ -11,6 +11,10 @@ public abstract class Unit {
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
 	}
+	
+	public boolean isAlly() {
+		return this.getUnitId() == 0 || this.getUnitId() == 1;
+	}
 
 	public int getUnitId() {
 		return this.unitId;

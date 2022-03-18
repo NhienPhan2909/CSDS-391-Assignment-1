@@ -107,15 +107,27 @@ public class GameState {
 
 		// Calculate utility of the state based on the cumulative health our footmen
 		// still have
-		this.utility += getHealthUtility()*0.2;
+		this.utility += getAlliesUtility();
+		this.utility += getEnemiesUtility();
+		this.utility += getHealthUtility();
 		// Calculate utility of the state based on cumulative damaged dealt to enemies
-		this.utility += getDamageUtility()*0.2;
+		this.utility += getDamageUtility();
 		// Calculate utility of the state based on the probability that our footmen can
 		// avoid obstacles (resources)
-		this.utility += getPositionUtility()*0.6;
+		this.utility += getPositionUtility();
 		// Modify the utility boolean flag
 		this.utilityCalculated = true;
 		return this.utility;
+	}
+	
+	private double getAlliesUtility() {
+		return this.GameMap.getAliveAllies().isEmpty() ? Double.NEGATIVE_INFINITY 
+				: this.GameMap.getAliveAllies().size();
+	}
+	
+	private double getEnemiesUtility() {
+		return this.GameMap.getAliveEnemies().isEmpty() ? Double.POSITIVE_INFINITY 
+				: this.GameMap.getAliveEnemies().size();
 	}
 	
 
@@ -195,7 +207,8 @@ public class GameState {
 				AstarResult = aStarAgent.AstarSearch(start, goal, this.GameMap.getXExtent(), this.GameMap.getYExtent(),
 						null, resourceLocations);
 				while (!AstarResult.isEmpty()) {
-					newValue = AstarResult.pop().cost;
+					MapLocation x = AstarResult.pop();
+					newValue = x.cost + x.heuristic;
 				}
 				value = Math.min(newValue, value);
 			}
@@ -265,6 +278,9 @@ public class GameState {
 	 * @return List of actions given GameUnit could take
 	 */
 	private List<Action> getActionsForGameUnit(GameUnit GameUnit) {
+		int nextX = 0; int nextY = 0;
+		Stack<Integer> xStack = new Stack<Integer>(); 
+		Stack<Integer> yStack = new Stack<Integer>();
 		// create a list to store actions
 		List<Action> actions = new ArrayList<Action>();
 		// go over each direction
@@ -275,9 +291,11 @@ public class GameState {
 			case SOUTH:
 			case WEST:
 				// calculate the new X position regarding to the direction
-				int nextX = GameUnit.getXPosition() + direction.xComponent();
+				nextX = GameUnit.getXPosition() + direction.xComponent();
+				xStack.push(nextX);
 				// calculate the new Y position regarding to the direction
-				int nextY = GameUnit.getYPosition() + direction.yComponent();
+				nextY = GameUnit.getYPosition() + direction.yComponent();
+				yStack.push(nextY);
 				// add the potential action to the action list if the move is valid
 				if (this.GameMap.isPositionValid(nextX, nextY) && this.GameMap.isEmpty(nextX, nextY)) {
 					actions.add(Action.createPrimitiveMove(GameUnit.getUnitId(), direction));
@@ -287,10 +305,28 @@ public class GameState {
 				break;
 			}
 		}
+		/*while (!xStack.isEmpty() && !yStack.isEmpty()) {
+			int xPop = xStack.pop(); int yPop = yStack.pop();
+			int x = xPop - GameUnit.getXPosition();
+			int y = yPop - GameUnit.getYPosition();
+			if (this.GameMap.isPositionValid(xPop, yPop) &&
+					Math.abs(x) < 2 && Math.abs(y) < 2 && this.GameMap.getUnitMatrix()[xPop][yPop] != null 
+					&& this.GameMap.getUnitMatrix()[xPop][yPop].isAlly())
+				actions.add(Action.createPrimitiveAttack(GameUnit.getUnitId(), 
+						this.GameMap.getUnitMatrix()[xPop][yPop].getUnitId()));
+		}*/
+		/*if (this.GameMap.getUnitMatrix()[nextX][nextY] != null 
+				&& !this.GameMap.getUnitMatrix()[nextX][nextY].isAlly()
+				&& Math.abs(nextX - GameUnit.getXPosition()) < 2
+				&& Math.abs(nextX - GameUnit.getYPosition()) < 2) {
+			actions.add(Action.createPrimitiveAttack(GameUnit.getUnitId(), 
+					this.GameMap.getUnitMatrix()[nextX][nextY].getUnitId()));
+		}*/
+		
 		// check for an attack move an add attack move to actions if possible
 		for (Integer id : this.GameMap.canBeUnderAttackUnits(GameUnit)) {
 			actions.add(Action.createPrimitiveAttack(GameUnit.getUnitId(), id));
-		}
+		}		
 		return actions;
 	}
 
