@@ -4,9 +4,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.Agent;
@@ -137,8 +140,14 @@ public class MinimaxAlphaBeta extends Agent {
         Collections.sort(nonAttackMoves);
         // add the non-attack list to the end of the attack list
         // (prioritize attack actions)
-        attackMoves.addAll(nonAttackMoves);
+        //attackMoves.addAll(nonAttackMoves);
         // return the list of ordered children nodes
+        //Collections.sort(attackMoves);
+        /*List<GameStateChild> newList = Stream.concat(attackMoves.stream(), nonAttackMoves.stream())
+                .collect(Collectors.toList());
+        return newList;*/
+        if (attackMoves.isEmpty())
+        	return nonAttackMoves;
         return attackMoves;
     }
 

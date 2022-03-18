@@ -4,7 +4,7 @@ import java.util.Set;
 
 import edu.cwru.sepia.agent.AstarAgent.MapLocation;
 
-public class Helper {
+public class HelperAstar {
 	// Below are 2 helpers methods to use in support of AstarSearch
 
 	/**

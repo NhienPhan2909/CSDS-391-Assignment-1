@@ -35,9 +35,9 @@ public class GameStateChild implements Comparable<GameStateChild> {
 	public int compareTo(GameStateChild gsc) 
 	{
 		if (this.state.getUtility() > gsc.state.getUtility()){
-    		return -1;
-    	} else if (this.state.getUtility() < gsc.state.getUtility()){
     		return 1;
+    	} else if (this.state.getUtility() < gsc.state.getUtility()){
+    		return -1;
     	} else {
     		return 0;
     	}

@@ -13,15 +13,15 @@ import java.util.*;
 
 public class AstarAgent extends Agent {
 
-    static class MapLocation implements Comparable<MapLocation>
+    public static class MapLocation implements Comparable<MapLocation>
     {
         public int x, y;
         // Variable to determine the previous position
-        MapLocation cameFrom;
+        public MapLocation cameFrom;
         // Variable to hold the heuristic value of a node
-        float heuristic;
+        public float heuristic;
         // Variable to hold the cost of a node
-        float cost;
+        public float cost;
 
         public MapLocation(int x, int y, MapLocation cameFrom, float cost)
         {
@@ -59,13 +59,13 @@ public class AstarAgent extends Agent {
     		double costToCompare = loc.heuristic + loc.cost;
     		
     		if (cost > costToCompare) {
-    			return 1;
+    			return -1;
     		}
     		else if (cost == costToCompare) {
     			return 0;
     		}
     		else {
-    			return -1;
+    			return 1;
     		}
     	}
     }
@@ -82,7 +82,7 @@ public class AstarAgent extends Agent {
         super(playernum);
 
         System.out.println("Constructed AstarAgent");
-    }
+    }  
 
     @Override
     public Map<Integer, Action> initialStep(State.StateView newstate, History.HistoryView statehistory) {
@@ -358,7 +358,7 @@ public class AstarAgent extends Agent {
      * @param resourceLocations Set of positions occupied by resources
      * @return Stack of positions with top of stack being first move in plan
      */
-    private Stack<MapLocation> AstarSearch(MapLocation start, MapLocation goal, int xExtent, int yExtent, 
+    public Stack<MapLocation> AstarSearch(MapLocation start, MapLocation goal, int xExtent, int yExtent, 
     		MapLocation enemyFootmanLoc, Set<MapLocation> resourceLocations)
     {
     	// Open list
@@ -367,7 +367,7 @@ public class AstarAgent extends Agent {
     	ArrayList<MapLocation> closedList = new ArrayList<MapLocation>();
     	
     	// Begin exploration
-    	closedList.add(enemyFootmanLoc);
+    	// closedList.add(enemyFootmanLoc);
     	// Add the starting location to the open list and empty the closed list
     	openList.add(start);
     	// Sort the open list to determine the order of removal from the open list
@@ -412,13 +412,13 @@ public class AstarAgent extends Agent {
     				// Record the cost
     				potentialPosition.cost = checkCost;
     				// Record the heuristic value
-    				potentialPosition.heuristic = Helper.heuristicCalculation(currentPosition, goal);
+    				potentialPosition.heuristic = HelperAstar.heuristicCalculation(currentPosition, goal);
     				// Add potential position to open list
     				openList.add(potentialPosition);
     				// Set parent to current position
     				potentialPosition.cameFrom = currentPosition;
     				// Sort the open list again to maintain the removal order
-    				Collections.sort(openList);
+    				Collections.sort(openList, Collections.reverseOrder());
     			}
     		}
     	}
@@ -431,7 +431,7 @@ public class AstarAgent extends Agent {
     	// Get the final node in the open list to test
         MapLocation test = openList.get(0);
         // Test if the end of our goal path is not the goal position, if not close program
-        if (Helper.heuristicCalculation(test, goal) != 0) {
+        if (HelperAstar.heuristicCalculation(test, goal) != 0) {
         	System.out.println("No available path.");
     		System.exit(0);
     		return null;
@@ -476,7 +476,7 @@ public class AstarAgent extends Agent {
     			MapLocation potentialPosition = new MapLocation(currentPosition.x + x, currentPosition.y + y, null, 0);
     			
     			// Add the potential move to the array list if it is a valid positions
-    			if (Helper.isPositionValid(currentPosition, potentialPosition, xExtent, yExtent, resourceLocations)) {
+    			if (HelperAstar.isPositionValid(currentPosition, potentialPosition, xExtent, yExtent, resourceLocations)) {
     				surroundingPositions.add(potentialPosition);
     			}
     		}

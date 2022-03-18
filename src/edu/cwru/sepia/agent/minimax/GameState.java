@@ -2,24 +2,38 @@ package edu.cwru.sepia.agent.minimax;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.action.DirectedAction;
 import edu.cwru.sepia.action.TargetedAction;
+import edu.cwru.sepia.agent.HelperAstar;
+import edu.cwru.sepia.agent.AstarAgent;
+import edu.cwru.sepia.agent.AstarAgent.MapLocation;
+import edu.cwru.sepia.agent.planner.actions.StripsAction;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.util.Direction;
 
 public class GameState {
+	// Create an AstarAgent
+	AstarAgent aStarAgent;
+	
 	// Get the name for the move and the attack action
 	public static final String ACTION_MOVE_NAME = Action.createPrimitiveMove(0, null).getType().name();
 	public static final String ACTION_ATTACK_NAME = Action.createPrimitiveAttack(0, 0).getType().name();
 
 	// The helper data structure game map for easy manipulation
-	private GameMap GameMap;
+	public GameMap GameMap;
 	// A flag to check if it is our turn to play
 	private boolean ourTurn;
 	// A flag to check whether utility for a state is calculated yet
@@ -47,6 +61,7 @@ public class GameState {
 		});
 		// Change the turn boolean flag to true to signify that we play the first turn
 		this.ourTurn = true;
+		aStarAgent = new AstarAgent(2);
 	}
 
 	/**
@@ -73,6 +88,7 @@ public class GameState {
 		// Calculate the utility and modify the utility boolean flag
 		this.utilityCalculated = gameState.utilityCalculated;
 		this.utility = gameState.utility;
+		aStarAgent = gameState.aStarAgent;
 	}
 
 	/**
@@ -88,16 +104,38 @@ public class GameState {
 
 		// Calculate utility of the state based on the cumulative health our footmen
 		// still have
-		this.utility += getHealthUtility()*0.25;
+		//this.utility += getHealthUtility()*20;
 		// Calculate utility of the state based on cumulative damaged dealt to enemies
-		this.utility += getDamageUtility()*0.25;
+		this.utility += getDamageUtility()*20;
 		// Calculate utility of the state based on the probability that our footmen can
 		// avoid obstacles (resources)
-		this.utility += getPositionUtility()*0.5;
+		this.utility += getPositionUtility()*50;
 		// Modify the utility boolean flag
 		this.utilityCalculated = true;
 		return this.utility;
 	}
+	
+	public boolean canFootmanAttack(MapLocation footmanPosition, MapLocation archerPosition, 
+			int xExtent, int yExtent, Set<MapLocation> resourceLocations) {
+		for (int x = -1; x < 2; x++) {
+	    	for (int y = -1; y < 2; y++) {
+	    		// Exclude the current position
+	    		if (x == footmanPosition.x && y == footmanPosition.y) {
+	    			continue;
+	    		}
+	    		
+	    		// Compute the location of the potential positions
+	    		MapLocation potentialPosition = new MapLocation(footmanPosition.x + x, footmanPosition.y + y, null, 0);
+	    			
+	    		if (HelperAstar.isPositionValid(footmanPosition, potentialPosition, xExtent, yExtent, resourceLocations)
+	    				&& (potentialPosition.equals(archerPosition))) {
+	    			return true;
+	    		}
+	    	}
+	    }
+		return false;
+	}
+	
 
 	/**
 	 * @return the cumulative amount of health-retained ratio our footmen still have
@@ -132,164 +170,55 @@ public class GameState {
 	 * @return how well the footmen can avoid running into resources
 	 */
 	private double getPositionUtility() {
-		// if the map has no resources unit at all or no resource units near a footman-archer pair
-		if (this.GameMap.resourceUnits.isEmpty() || noresourceUnitsAreInTheArea()) {
-			// return the distance to the enemy with negative weight
-			return distanceFromEnemy() * -1;
-		}
-		// calculate the percentage of footmen blocked by resources
-		double percentageBlocked = percentageOfBlockedFootmen();
-		// if there are footmen blocked by resources
-		if (percentageBlocked > 0) {
-			// return the percentage of footmen blocked with negative weight
-			return -200000 * percentageBlocked;
-		}
 		// return the distance to the enemy with negative weight otherwise
-		return distanceFromEnemy() * -1;
-	}
-
-	/**
-	 * @return ratio between footmen blocked by resources and total footmen still
-	 *         alive
-	 */
-	private double percentageOfBlockedFootmen() {
-		// variable to count number of footmen blocked
-		int blockedCount = 0;
-		// variable to count number of footmen alive
-		int totalCount = 0;
-		// check each alive footman
-		for (GameUnit ally : this.GameMap.getAliveAllies()) {
-			// find the closest enemy to this footman
-			GameUnit enemy = this.getClosestEnemy(ally);
-			// if there is a closest enemy
-			if (enemy != null) {
-				// get the position of the footman
-				int i = ally.getXPosition();
-				int j = ally.getYPosition();
-				// while the enemy does not have the same position with the footman
-				while (i != enemy.getXPosition() || j != enemy.getYPosition()) {
-					// increment blocked count if there is an element at current position
-					if (this.GameMap.isPositionValid(i, j) && this.GameMap.isResource(i, j)) {
-						blockedCount++;
-					}
-					// increment/decrement i to consider positions closer to enemy
-					if (i < enemy.getXPosition()) {
-						i++;
-					} else if (i > enemy.getXPosition()) {
-						i--;
-					}
-					// // increment/decrement j to consider positions closer to enemy
-					if (j < enemy.getYPosition()) {
-						j++;
-					} else if (j > enemy.getYPosition()) {
-						j--;
-					}
-				}				
-			}
-			// increment the count for number of alive footmen
-			totalCount++;
-		}
-		// return 0 if there is no alive footmen
-		if (totalCount == 0) {
+		double x = distanceFromEnemy();
+		if (x == -0)
 			return 0;
-		}
-		// otherwise return the ratio between footmen blocked and total alive footmen
-		//return blockedCount / totalCount;
-		return blockedCount / totalCount;
-	}
-
-	/**
-	 * @return true if no resource units near footman-archer pair
-	 */
-	private boolean noresourceUnitsAreInTheArea() {
-		// variable to count the resource
-		int resourceCount = 0;
-		// variable to count the game units
-		int unitCount = 0;
-		// check each footman that is still alive
-		for (GameUnit ally : this.GameMap.getAliveAllies()) {
-			// check each enemy that is still alive
-			for (GameUnit enemy : this.GameMap.getAliveEnemies()) {
-				// increment resource count if there are resource near footman-archer
-				if (numresourceUnitInAreaBetween(ally, enemy) != 0) {
-					resourceCount++;
-				}
-			}
-			// increment the unit count after we check are around a footman
-			unitCount++;
-		}
-		// return true if no resource units near footman-archer pair, false otherwise
-		return resourceCount < unitCount;
-	}
-
-	/**
-	 * @param ally: footman unit
-	 * @param enemy: archer unit
-	 * @return the number of resource units in the largest rectangle possible between
-	 * the two game units' coordinates.
-	 */
-	private double numresourceUnitInAreaBetween(GameUnit ally, GameUnit enemy) {
-		// variable to count resource unit
-		double resourceCount = 0.0;
-		// check each position inside a rectangular area between two game units
-		// get the largest horizontal dimension for our rectangular area
-		for (int i = Math.min(ally.getXPosition(), enemy.getXPosition()); i < Math.max(ally.getXPosition(),
-				enemy.getXPosition()); i++) {
-			// get the largest vertical dimension for our rectangular area
-			for (int j = Math.min(ally.getYPosition(), enemy.getYPosition()); j < Math.max(ally.getYPosition(),
-					enemy.getYPosition()); j++) {
-				// increment resource count if there is a resource at a position inside the area
-				if (this.GameMap.isResource(i, j)) {
-					resourceCount += 1;
-				}
-			}
-		}
-		return resourceCount;
+		else
+			return x*-1;
 	}
 
 	/**
 	 * @return the cumulative distance to the closest enemy from each footman
 	 */
 	private double distanceFromEnemy() {
-		// variable to keep track of the closest distance
 		double utility = 0.0;
-		// check each footman still alive
-		for (GameUnit ally : this.GameMap.getAliveAllies()) {
-			// a variable to hold the distance between this footman and enemies
+		
+		// A variable to hold the result of AstarSearch
+		Stack<MapLocation> AstarResult = new Stack<MapLocation>();
+		
+		// Create resource location set
+		Set<MapLocation> resourceLocations = new HashSet<MapLocation>();
+		for (Map.Entry<Integer, ResourceUnit> set : this.GameMap.resourceUnits.entrySet()) {
+			int x = set.getValue().getXPosition();
+			int y = set.getValue().getYPosition();
+			MapLocation newResourcePosition = new MapLocation(x, y, null, 0);
+			resourceLocations.add(newResourcePosition);
+        }
+		
+		for(GameUnit ally : this.GameMap.getAliveAllies()){
 			double value = Double.POSITIVE_INFINITY;
-			// check each enemy still alive
-			for (GameUnit enemy : this.GameMap.getAliveEnemies()) {
-				// calculate the Manhattan distance (the distance the footman may have to move)
-				// between footman and enemy and update value if the newly calculated value is smaller
-				value = Math.min(this.GameMap.manhattanDistance(ally, enemy), value);
+			if (!this.GameMap.canBeUnderAttackUnits(ally).isEmpty()) {
+				return 0;
 			}
-			// add the smallest distance to an enemy from this footman to the cumulative distance
-			if (value != Double.POSITIVE_INFINITY) {
+			double newValue = 0;
+			for(GameUnit enemy : this.GameMap.getAliveEnemies()){
+				MapLocation start = new MapLocation(ally.getXPosition(), ally.getYPosition(), null, 0);
+				MapLocation goal = new MapLocation(enemy.getXPosition(), enemy.getYPosition(), null, 0);
+				
+				
+				AstarResult = aStarAgent.AstarSearch(goal, start, this.GameMap.getXExtent(), this.GameMap.getYExtent(),
+						null, resourceLocations);
+				while (!AstarResult.isEmpty()) {
+					newValue = AstarResult.pop().cost;
+				}
+				value = Math.min(newValue, value);
+			}
+			if(value != Double.POSITIVE_INFINITY){
 				utility += value;
 			}
 		}
 		return utility;
-	}
-
-	/**
-	 * @param ally: the footman unit
-	 * @return the closest enemy 
-	 */
-	private GameUnit getClosestEnemy(GameUnit ally) {
-		// create a variable to keep track of the closest enemy
-		GameUnit closestEnemy = null;
-		// check each enemy still alive
-		for (GameUnit enemy : this.GameMap.getAliveEnemies()) {
-			// if there is no enemy considered then by default this is closest enemy
-			if (closestEnemy == null) {
-				closestEnemy = enemy;
-			} // if the distance to this enemy is smaller than the current samllest distance to enemy
-			else if (this.GameMap.manhattanDistance(ally, enemy) < this.GameMap.manhattanDistance(ally, closestEnemy)) {
-				// update closest enemy
-				closestEnemy = enemy;
-			}
-		}
-		return closestEnemy;
 	}
 
 	/**

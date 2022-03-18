@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import edu.cwru.sepia.agent.AstarAgent.MapLocation;
+
 // A helper class with helper methods to use for easier manipulation of units in the game
 public class GameMap {
 	// A 2D array that stores the units at their location on the map
@@ -28,6 +30,14 @@ public class GameMap {
 		GameMap = new Unit[width][height];
 		this.width = width;
 		this.height = height;
+	}
+	
+	public int getXExtent() {
+		return width;
+	}
+	
+	public int getYExtent() {
+		return height;
 	}
 	
 	public Unit[][] getUnitMatrix() {
@@ -201,8 +211,8 @@ public class GameMap {
 	 * @param gameUnit2: second unit
 	 * @return: Euclidean distance between first and second units
 	 */
-	public double attackDistance(GameUnit gameUnit1, GameUnit gameUnit2){
-		return Math.floor(Math.hypot(Math.abs(gameUnit1.getXPosition() - gameUnit2.getXPosition()),
+	public int attackDistance(GameUnit gameUnit1, GameUnit gameUnit2){
+		return (int) Math.floor(Math.hypot(Math.abs(gameUnit1.getXPosition() - gameUnit2.getXPosition()),
 				Math.abs(gameUnit1.getYPosition() - gameUnit2.getYPosition())));
 	}
 
@@ -224,5 +234,10 @@ public class GameMap {
 			}
 		}
 		return attackable;
+	}
+	
+	public boolean isGoal() {
+		Collection<GameUnit> checkList = getAliveEnemies();
+		return checkList.isEmpty();
 	}
 }
