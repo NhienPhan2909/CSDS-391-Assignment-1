@@ -28,6 +28,8 @@ public class GameState {
 	// Create an AstarAgent
 	AstarAgent aStarAgent;
 	
+	public boolean canAttack = false;
+	
 	// Get the name for the move and the attack action
 	public static final String ACTION_MOVE_NAME = Action.createPrimitiveMove(0, null).getType().name();
 	public static final String ACTION_ATTACK_NAME = Action.createPrimitiveAttack(0, 0).getType().name();
@@ -39,7 +41,7 @@ public class GameState {
 	// A flag to check whether utility for a state is calculated yet
 	private boolean utilityCalculated = false;
 	// The utility of a state
-	private double utility = 0.0;
+	double utility = 0.0;
 
 	/**
 	 * Constructor that takes from a SEPIA state view. This is only called once when
@@ -61,7 +63,7 @@ public class GameState {
 		});
 		// Change the turn boolean flag to true to signify that we play the first turn
 		this.ourTurn = true;
-		aStarAgent = new AstarAgent(2);
+		aStarAgent = new AstarAgent(1);
 	}
 
 	/**
@@ -89,6 +91,7 @@ public class GameState {
 		this.utilityCalculated = gameState.utilityCalculated;
 		this.utility = gameState.utility;
 		aStarAgent = gameState.aStarAgent;
+		//canAttack = gameState.canAttack;
 	}
 
 	/**
@@ -104,36 +107,15 @@ public class GameState {
 
 		// Calculate utility of the state based on the cumulative health our footmen
 		// still have
-		//this.utility += getHealthUtility()*20;
+		this.utility += getHealthUtility()*0.2;
 		// Calculate utility of the state based on cumulative damaged dealt to enemies
-		this.utility += getDamageUtility()*20;
+		this.utility += getDamageUtility()*0.2;
 		// Calculate utility of the state based on the probability that our footmen can
 		// avoid obstacles (resources)
-		this.utility += getPositionUtility()*50;
+		this.utility += getPositionUtility()*0.6;
 		// Modify the utility boolean flag
 		this.utilityCalculated = true;
 		return this.utility;
-	}
-	
-	public boolean canFootmanAttack(MapLocation footmanPosition, MapLocation archerPosition, 
-			int xExtent, int yExtent, Set<MapLocation> resourceLocations) {
-		for (int x = -1; x < 2; x++) {
-	    	for (int y = -1; y < 2; y++) {
-	    		// Exclude the current position
-	    		if (x == footmanPosition.x && y == footmanPosition.y) {
-	    			continue;
-	    		}
-	    		
-	    		// Compute the location of the potential positions
-	    		MapLocation potentialPosition = new MapLocation(footmanPosition.x + x, footmanPosition.y + y, null, 0);
-	    			
-	    		if (HelperAstar.isPositionValid(footmanPosition, potentialPosition, xExtent, yExtent, resourceLocations)
-	    				&& (potentialPosition.equals(archerPosition))) {
-	    			return true;
-	    		}
-	    	}
-	    }
-		return false;
 	}
 	
 
@@ -198,16 +180,19 @@ public class GameState {
 		
 		for(GameUnit ally : this.GameMap.getAliveAllies()){
 			double value = Double.POSITIVE_INFINITY;
-			if (!this.GameMap.canBeUnderAttackUnits(ally).isEmpty()) {
-				return 0;
-			}
+			
 			double newValue = 0;
 			for(GameUnit enemy : this.GameMap.getAliveEnemies()){
 				MapLocation start = new MapLocation(ally.getXPosition(), ally.getYPosition(), null, 0);
 				MapLocation goal = new MapLocation(enemy.getXPosition(), enemy.getYPosition(), null, 0);
 				
 				
-				AstarResult = aStarAgent.AstarSearch(goal, start, this.GameMap.getXExtent(), this.GameMap.getYExtent(),
+				if (nextTo(goal, start)) {
+					canAttack = true;
+					return 0;
+				}
+				
+				AstarResult = aStarAgent.AstarSearch(start, goal, this.GameMap.getXExtent(), this.GameMap.getYExtent(),
 						null, resourceLocations);
 				while (!AstarResult.isEmpty()) {
 					newValue = AstarResult.pop().cost;
@@ -220,7 +205,31 @@ public class GameState {
 		}
 		return utility;
 	}
-
+	
+	public boolean nextTo (MapLocation start, MapLocation goal) {
+		int xStart = start.x; int yStart = start.y;
+		int xGoal = goal.x; int yGoal = goal.y;
+		
+		if (xStart == xGoal && yStart == yGoal)
+			return true;
+		else if (xStart + 1 == xGoal && yStart + 1 == yGoal)
+			return true;
+		else if (xStart - 1 == xGoal && yStart - 1 == yGoal)
+			return true;
+		else if (xStart + 1 == xGoal && yStart - 1 == yGoal)
+			return true;
+		else if (xStart - 1 == xGoal && yStart + 1 == yGoal)
+			return true;
+		else if (xStart + 1 == xGoal && yStart == yGoal)
+			return true;
+		else if (xStart - 1 == xGoal && yStart == yGoal)
+			return true;
+		else if (xStart == xGoal && yStart + 1 == yGoal)
+			return true;
+		else if (xStart == xGoal && yStart - 1 == yGoal)
+			return true;		
+		return false;
+	}
 	/**
 	 * Takes into account the current turn (good or bad) and generates children for
 	 * the current ply.

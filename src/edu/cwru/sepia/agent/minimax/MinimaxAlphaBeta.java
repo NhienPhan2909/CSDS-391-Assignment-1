@@ -99,55 +99,30 @@ public class MinimaxAlphaBeta extends Agent {
         
         // check each child node in the children list
         for(GameStateChild child : children){
-        	// variable to count the number of attack action
-        	int numAttacks = 0;
-        	// check each action of a child
-        	for(Action action : child.action.values()){
-        		if(action.getType().name().equals(GameState.ACTION_ATTACK_NAME)){
-        			// increment attack count if the action is an attack action
-        			numAttacks++;
-        		}
+        	if (child.state.canAttack) {
+        		attackMoves.add(child);
         	}
-        	
-        	// if all the actions of the child node are attack actions
-        	// (add to the lists in different order so the sort steps below can have better runtime)
-        	if(numAttacks == child.action.size())
-        	{
-        		// add the child node to the front of the list of nodes where attack is possible 
-        		// (prioritize based on number of attack actions)
-        		attackMoves.add(0, child);
-        	} // if the attack actions list is empty and there exists attack moves
-        	else if (numAttacks > 0 && attackMoves.isEmpty())
-        	{	
-        		// add the child node to the front of the list of nodes where attack is possible 
-        		attackMoves.add(0, child);
-        	} // if there exists attack moves  
-        	else if (numAttacks > 0 && !attackMoves.isEmpty()) 
-        	{
-        		// add the child node behind nodes whose all actions are attack actions 
-        		attackMoves.add(1, child);	
-        	} // if there is no attack moves 
-        	else 
-        	{
-        		// add the child node to the list of where attack is impossible
+        	else
         		nonAttackMoves.add(child);
-        	}
         }
         
         // sort the list of nodes with attack actions based on utility values
         Collections.sort(attackMoves);
+        //System.out.println(attackMoves.isEmpty());
         // sort the list of nodes with no attack actions based on utility values
         Collections.sort(nonAttackMoves);
         // add the non-attack list to the end of the attack list
         // (prioritize attack actions)
-        //attackMoves.addAll(nonAttackMoves);
+        attackMoves.addAll(nonAttackMoves);
         // return the list of ordered children nodes
         //Collections.sort(attackMoves);
         /*List<GameStateChild> newList = Stream.concat(attackMoves.stream(), nonAttackMoves.stream())
                 .collect(Collectors.toList());
+        Collections.sort(newList);
         return newList;*/
-        if (attackMoves.isEmpty())
-        	return nonAttackMoves;
+        //if (attackMoves.isEmpty())
+        	//return nonAttackMoves;
+        //attackMoves.addAll(nonAttackMoves);
         return attackMoves;
     }
 

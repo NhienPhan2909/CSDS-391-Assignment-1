@@ -81,7 +81,7 @@ public class AstarAgent extends Agent {
     {
         super(playernum);
 
-        System.out.println("Constructed AstarAgent");
+        //System.out.println("Constructed AstarAgent");
     }  
 
     @Override
@@ -373,7 +373,7 @@ public class AstarAgent extends Agent {
     	// Sort the open list to determine the order of removal from the open list
     	// Sort the open list in ascending order to create a stack that traces the
     	// path from the goal back to the start
-    	Collections.sort(openList);
+    	Collections.sort(openList, Collections.reverseOrder());
     	
     	// While the open list is not empty 
     	while (!openList.isEmpty()) {

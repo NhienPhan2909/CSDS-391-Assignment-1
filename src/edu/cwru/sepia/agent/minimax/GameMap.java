@@ -235,9 +235,5 @@ public class GameMap {
 		}
 		return attackable;
 	}
-	
-	public boolean isGoal() {
-		Collection<GameUnit> checkList = getAliveEnemies();
-		return checkList.isEmpty();
-	}
+
 }
