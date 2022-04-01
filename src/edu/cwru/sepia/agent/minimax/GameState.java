@@ -18,7 +18,6 @@ import edu.cwru.sepia.action.TargetedAction;
 import edu.cwru.sepia.agent.HelperAstar;
 import edu.cwru.sepia.agent.AstarAgent;
 import edu.cwru.sepia.agent.AstarAgent.MapLocation;
-import edu.cwru.sepia.agent.planner.actions.StripsAction;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Unit;
@@ -91,7 +90,6 @@ public class GameState {
 		this.utilityCalculated = gameState.utilityCalculated;
 		this.utility = gameState.utility;
 		aStarAgent = gameState.aStarAgent;
-		//canAttack = gameState.canAttack;
 	}
 
 	/**
@@ -105,26 +103,23 @@ public class GameState {
 			return this.utility;
 		}
 
-		// Calculate utility of the state based on the cumulative health our footmen
-		// still have
-		this.utility += getAlliesUtility();
+		// Use the number of alive enemies as reverse indicator for utility to prioritize attack moves
 		this.utility += getEnemiesUtility();
+		// Use the cumulative health of allies to prioritize the state where allies take least damage if possible
 		this.utility += getHealthUtility();
-		// Calculate utility of the state based on cumulative damaged dealt to enemies
+		// Use cumulative damaged dealt to enemies to prioritize attack moves
 		this.utility += getDamageUtility();
-		// Calculate utility of the state based on the probability that our footmen can
-		// avoid obstacles (resources)
+		// Use the position utility of our footmen (based on Astar search) to prioritize moves that bring the footmen 
+		// closer to the archers
 		this.utility += getPositionUtility();
 		// Modify the utility boolean flag
 		this.utilityCalculated = true;
 		return this.utility;
 	}
 	
-	private double getAlliesUtility() {
-		return this.GameMap.getAliveAllies().isEmpty() ? Double.NEGATIVE_INFINITY 
-				: this.GameMap.getAliveAllies().size();
-	}
-	
+	/**
+	 * @return the number of alive enemies
+	 */
 	private double getEnemiesUtility() {
 		return this.GameMap.getAliveEnemies().isEmpty() ? Double.POSITIVE_INFINITY 
 				: this.GameMap.getAliveEnemies().size();
@@ -161,14 +156,15 @@ public class GameState {
 	}
 
 	/**
-	 * @return how well the footmen can avoid running into resources
+	 * @return the utility of the footmen's position
 	 */
 	private double getPositionUtility() {
-		// return the distance to the enemy with negative weight otherwise
 		double x = distanceFromEnemy();
 		if (x == -0)
 			return 0;
-		else
+		else 
+			// return the distance to the enemy with negative weight to prioritize game state with the smallest distance
+			// from footmen to archers
 			return x*-1;
 	}
 
@@ -190,28 +186,39 @@ public class GameState {
 			resourceLocations.add(newResourcePosition);
         }
 		
+		// For each alive ally
 		for(GameUnit ally : this.GameMap.getAliveAllies()){
+			// Variables for the utility values calculated for this ally
 			double value = Double.POSITIVE_INFINITY;
-			
 			double newValue = 0;
+			
+			// For each alive enemy
 			for(GameUnit enemy : this.GameMap.getAliveEnemies()){
+				// Create the map location of the ally and the enemy
 				MapLocation start = new MapLocation(ally.getXPosition(), ally.getYPosition(), null, 0);
 				MapLocation goal = new MapLocation(enemy.getXPosition(), enemy.getYPosition(), null, 0);
 				
-				
+				// If the enemy is next to the ally
 				if (nextTo(goal, start)) {
 					canAttack = true;
 					return 0;
 				}
 				
+				// Call Astar Search from Programming Assignment 1
 				AstarResult = aStarAgent.AstarSearch(start, goal, this.GameMap.getXExtent(), this.GameMap.getYExtent(),
 						null, resourceLocations);
+				
+				// Get the last value in the MapLocation stacks returned by Astar Search
+				// This is because in Programming Assignment 1 we want to avoid the enemy while here we want to 
+				// move closer to the enemy to attack
 				while (!AstarResult.isEmpty()) {
 					MapLocation x = AstarResult.pop();
 					newValue = x.cost + x.heuristic;
 				}
+				// Replace the old utility value if the new value is better
 				value = Math.min(newValue, value);
 			}
+			// Add the utility of the ally to the total utility of the game state being considered
 			if(value != Double.POSITIVE_INFINITY){
 				utility += value;
 			}
@@ -219,6 +226,12 @@ public class GameState {
 		return utility;
 	}
 	
+	/**
+	 * Consider whether the start location is next to the goal location
+	 * @param start: the beginning map location
+	 * @param goal: the target map location
+	 * @return: true if start is next to goal, false otherwise
+	 */
 	public boolean nextTo (MapLocation start, MapLocation goal) {
 		int xStart = start.x; int yStart = start.y;
 		int xGoal = goal.x; int yGoal = goal.y;
@@ -305,23 +318,6 @@ public class GameState {
 				break;
 			}
 		}
-		/*while (!xStack.isEmpty() && !yStack.isEmpty()) {
-			int xPop = xStack.pop(); int yPop = yStack.pop();
-			int x = xPop - GameUnit.getXPosition();
-			int y = yPop - GameUnit.getYPosition();
-			if (this.GameMap.isPositionValid(xPop, yPop) &&
-					Math.abs(x) < 2 && Math.abs(y) < 2 && this.GameMap.getUnitMatrix()[xPop][yPop] != null 
-					&& this.GameMap.getUnitMatrix()[xPop][yPop].isAlly())
-				actions.add(Action.createPrimitiveAttack(GameUnit.getUnitId(), 
-						this.GameMap.getUnitMatrix()[xPop][yPop].getUnitId()));
-		}*/
-		/*if (this.GameMap.getUnitMatrix()[nextX][nextY] != null 
-				&& !this.GameMap.getUnitMatrix()[nextX][nextY].isAlly()
-				&& Math.abs(nextX - GameUnit.getXPosition()) < 2
-				&& Math.abs(nextX - GameUnit.getYPosition()) < 2) {
-			actions.add(Action.createPrimitiveAttack(GameUnit.getUnitId(), 
-					this.GameMap.getUnitMatrix()[nextX][nextY].getUnitId()));
-		}*/
 		
 		// check for an attack move an add attack move to actions if possible
 		for (Integer id : this.GameMap.canBeUnderAttackUnits(GameUnit)) {

@@ -102,48 +102,52 @@ public class PEAgent extends Agent {
 		Map<Integer, Action> actionMap = new HashMap<Integer, Action>();
 
 		// Return the empty map for actions if there is no plan
-		if (plan.isEmpty()) {
-			return actionMap;
-		}
+		if(plan.isEmpty()) {
+    		return actionMap;
+    	}
 
 		// Get the turn number of the previous turn
 		int previousTurnNumber = stateView.getTurnNumber() - 1;
 		// If there is previous turn, then add the next action to the action map
-		if (previousTurnNumber < 0) {
-			Helper.addNextAction(actionMap, stateView, this);
-			return actionMap;
-		}
+    	if(previousTurnNumber < 0) {
+    		Helper.addNextAction(actionMap, stateView, this);
+    		return actionMap;
+    	}
 
-		// Create a map of results of actions of the previous turn
-		Map<Integer, ActionResult> previousActions = historyView.getCommandFeedback(playernum, previousTurnNumber);
-		// A boolean flag to check if the turn is finished
-		boolean finished = false;
-		// While the previous turn was not yet finished
-		while (!finished) {
+    	// Create a map of results of actions of the previous turn
+    	Map<Integer, ActionResult> previousActions = historyView.getCommandFeedback(playernum, previousTurnNumber);
+    	// A boolean flag to check if the turn is finished
+    	boolean finished = false;
+    	// While the previous turn was not yet finished
+		while(!finished) {
 			// Set the boolean flag for finished to true if the plan is empty
-			if (plan.empty()) {
+			if(plan.empty()) {
 				finished = true;
 			} else {
 				// Consider the first action in plan
-				StripsAction nextAction = plan.peek();
+				StripsAction next = plan.peek();
 				// Get the result of the last action committed by the same unit
-				ActionResult lastActionResult = previousActions.get(nextAction.getUnitID());
+				ActionResult previous = previousActions.get(next.getUnitID());
 				// If last action failed
-				if (Helper.isLastActionFailure(lastActionResult)) {
-					actionMap.put(lastActionResult.getAction().getUnitId(), lastActionResult.getAction());
-				} // Set the boolean flag for finished to true if the peasant unavailable 
-				  // or if the next state is to build more peasant
-				else if (!Helper.canPeasantDoAction(actionMap, nextAction, lastActionResult) 
-						|| Helper.isBuildNext(actionMap, nextAction)) {
+				if(Helper.isLastActionFailure(previous)) {
+					actionMap.put(previous.getAction().getUnitId(), previous.getAction());
+				}
+				// Set the boolean flag for finished to true if the peasant unavailable 
+				// or if the next state is to build more peasant
+				if(!Helper.canPeasantDoAction(actionMap, next, previous)) {
 					finished = true;
 				} else {
-					// Add first action in plan to the action map
-					Helper.addNextAction(actionMap, stateView, this);
+					if(Helper.isBuildNext(actionMap, next)) { 
+						finished = true;
+					} else {
+						// Add first action in plan to the action map
+						Helper.addNextAction(actionMap, stateView, this);
+					}
 				}
 			}
 		}
-		return actionMap;
-	}
+    	return actionMap;
+    }
 
 	/**
 	 * Returns a SEPIA version of the specified Strips Action.
