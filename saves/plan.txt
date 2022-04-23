@@ -15,7 +15,7 @@ HarvestAction(1, Gold, 100)
 GoAction(1, 8, 9)
 DepositAction(1, Gold, 100)
 GoAction(1, 12, 4)
-edu.cwru.sepia.agent.planner.actions.BuildAction@10348fd
+edu.cwru.sepia.agent.planner.actions.BuildAction@1e884f5
 HarvestAction(1, Wood, 100)
 GoAction(10, 15, 3)
 HarvestAction(10, Gold, 100)
@@ -51,7 +51,7 @@ GoAction(10, 15, 3)
 GoAction(1, 8, 9)
 DepositAction(1, Gold, 100)
 GoAction(1, 12, 4)
-edu.cwru.sepia.agent.planner.actions.BuildAction@131357c
+edu.cwru.sepia.agent.planner.actions.BuildAction@a73266
 HarvestAction(1, Wood, 100)
 GoAction(10, 8, 9)
 GoAction(11, 22, 16)

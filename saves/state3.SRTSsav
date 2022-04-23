@@ -1,13 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<state xExtent="25" yExtent="19" nextTargetID="3" nextTemplateID="66" fogOfWar="false">
+<state xExtent="25" yExtent="19" nextTargetID="8" nextTemplateID="66" fogOfWar="false">
     <player>
         <ID>0</ID>
+        <unit>
+            <ID>1</ID>
+            <currentHealth>8</currentHealth>
+            <xPosition>14</xPosition>
+            <yPosition>6</yPosition>
+            <templateID>25</templateID>
+            <cargoAmount>0</cargoAmount>
+            <progressAmount>0</progressAmount>
+        </unit>
+        <unit>
+            <ID>2</ID>
+            <currentHealth>5</currentHealth>
+            <xPosition>14</xPosition>
+            <yPosition>7</yPosition>
+            <templateID>25</templateID>
+            <cargoAmount>0</cargoAmount>
+            <progressAmount>0</progressAmount>
+        </unit>
+        <unit>
+            <ID>3</ID>
+            <currentHealth>53</currentHealth>
+            <xPosition>15</xPosition>
+            <yPosition>7</yPosition>
+            <templateID>25</templateID>
+            <cargoAmount>0</cargoAmount>
+            <progressAmount>0</progressAmount>
+        </unit>
+        <unit>
+            <ID>9</ID>
+            <currentHealth>44</currentHealth>
+            <xPosition>14</xPosition>
+            <yPosition>5</yPosition>
+            <templateID>25</templateID>
+            <cargoAmount>0</cargoAmount>
+            <progressAmount>0</progressAmount>
+        </unit>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <ID>0</ID>
             <foodCost>0</foodCost>
             <goldCost>1000</goldCost>
             <woodCost>400</woodCost>
-            <timeCost>1050</timeCost>
+            <timeCost>1</timeCost>
             <name>GryphonAviary</name>
             <baseHealth>500</baseHealth>
             <baseAttack>0</baseAttack>
@@ -36,7 +72,7 @@
             <foodCost>0</foodCost>
             <goldCost>550</goldCost>
             <woodCost>200</woodCost>
-            <timeCost>420</timeCost>
+            <timeCost>1</timeCost>
             <name>ScoutTower</name>
             <baseHealth>100</baseHealth>
             <baseAttack>0</baseAttack>
@@ -56,7 +92,7 @@
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
             <durationMove>1</durationMove>
-            <durationAttack>4</durationAttack>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -64,7 +100,7 @@
             <foodCost>1</foodCost>
             <goldCost>900</goldCost>
             <woodCost>300</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Ballista</name>
             <unitPrerequisite>9</unitPrerequisite>
             <unitPrerequisite>31</unitPrerequisite>
@@ -85,8 +121,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>32</durationMove>
-            <durationAttack>200</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -94,7 +130,7 @@
             <foodCost>0</foodCost>
             <goldCost>20</goldCost>
             <woodCost>10</woodCost>
-            <timeCost>210</timeCost>
+            <timeCost>1</timeCost>
             <name>Wall</name>
             <baseHealth>40</baseHealth>
             <baseAttack>0</baseAttack>
@@ -122,7 +158,7 @@
             <foodCost>0</foodCost>
             <goldCost>1000</goldCost>
             <woodCost>300</woodCost>
-            <timeCost>1050</timeCost>
+            <timeCost>1</timeCost>
             <name>Stables</name>
             <baseHealth>500</baseHealth>
             <baseAttack>0</baseAttack>
@@ -150,7 +186,7 @@
             <foodCost>0</foodCost>
             <goldCost>1200</goldCost>
             <woodCost>800</woodCost>
-            <timeCost>1785</timeCost>
+            <timeCost>1</timeCost>
             <name>TownHall</name>
             <baseHealth>1200</baseHealth>
             <baseAttack>0</baseAttack>
@@ -179,7 +215,7 @@
             <foodCost>0</foodCost>
             <goldCost>300</goldCost>
             <woodCost>300</woodCost>
-            <timeCost>1000</timeCost>
+            <timeCost>1</timeCost>
             <name>Arrow1</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>1</piercingAttackChange>
@@ -194,7 +230,7 @@
             <foodCost>0</foodCost>
             <goldCost>900</goldCost>
             <woodCost>500</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Arrow2</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>1</piercingAttackChange>
@@ -209,7 +245,7 @@
             <foodCost>0</foodCost>
             <goldCost>2000</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Longbow</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -224,7 +260,7 @@
             <foodCost>0</foodCost>
             <goldCost>600</goldCost>
             <woodCost>450</woodCost>
-            <timeCost>1050</timeCost>
+            <timeCost>1</timeCost>
             <name>LumberMill</name>
             <baseHealth>600</baseHealth>
             <baseAttack>0</baseAttack>
@@ -252,7 +288,7 @@
             <foodCost>0</foodCost>
             <goldCost>2500</goldCost>
             <woodCost>1200</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Castle</name>
             <unitPrerequisite>4</unitPrerequisite>
             <unitPrerequisite>9</unitPrerequisite>
@@ -270,7 +306,7 @@
             <foodCost>0</foodCost>
             <goldCost>99999</goldCost>
             <woodCost>99999</woodCost>
-            <timeCost>99999</timeCost>
+            <timeCost>1</timeCost>
             <name>SpawnPoint</name>
             <baseHealth>99999</baseHealth>
             <baseAttack>0</baseAttack>
@@ -302,7 +338,7 @@
             <foodCost>1</foodCost>
             <goldCost>800</goldCost>
             <woodCost>100</woodCost>
-            <timeCost>450</timeCost>
+            <timeCost>1</timeCost>
             <name>Knight</name>
             <unitPrerequisite>4</unitPrerequisite>
             <unitPrerequisite>31</unitPrerequisite>
@@ -323,8 +359,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>12</durationMove>
-            <durationAttack>25</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -332,7 +368,7 @@
             <foodCost>0</foodCost>
             <goldCost>700</goldCost>
             <woodCost>400</woodCost>
-            <timeCost>1400</timeCost>
+            <timeCost>1</timeCost>
             <name>Barracks</name>
             <baseHealth>800</baseHealth>
             <baseAttack>0</baseAttack>
@@ -364,7 +400,7 @@
             <foodCost>0</foodCost>
             <goldCost>800</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1000</timeCost>
+            <timeCost>1</timeCost>
             <name>Sword1</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>2</piercingAttackChange>
@@ -380,7 +416,7 @@
             <foodCost>0</foodCost>
             <goldCost>2400</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Sword2</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>2</piercingAttackChange>
@@ -396,7 +432,7 @@
             <foodCost>0</foodCost>
             <goldCost>1500</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Ranger</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -411,7 +447,7 @@
             <foodCost>1</foodCost>
             <goldCost>2500</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Gryphon</name>
             <baseHealth>100</baseHealth>
             <baseAttack>0</baseAttack>
@@ -430,8 +466,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>12</durationMove>
-            <durationAttack>4</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UpgradeTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -439,7 +475,7 @@
             <foodCost>0</foodCost>
             <goldCost>1000</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Paladin</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -454,7 +490,7 @@
             <foodCost>0</foodCost>
             <goldCost>900</goldCost>
             <woodCost>500</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Shield2</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -470,7 +506,7 @@
             <foodCost>0</foodCost>
             <goldCost>300</goldCost>
             <woodCost>300</woodCost>
-            <timeCost>1000</timeCost>
+            <timeCost>1</timeCost>
             <name>Shield1</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -486,7 +522,7 @@
             <foodCost>0</foodCost>
             <goldCost>1500</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Scouting</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -501,10 +537,10 @@
             <foodCost>1</foodCost>
             <goldCost>500</goldCost>
             <woodCost>50</woodCost>
-            <timeCost>350</timeCost>
+            <timeCost>1</timeCost>
             <name>Archer</name>
             <unitPrerequisite>9</unitPrerequisite>
-            <baseHealth>60</baseHealth>
+            <baseHealth>40</baseHealth>
             <baseAttack>3</baseAttack>
             <piercingAttack>6</piercingAttack>
             <range>4</range>
@@ -521,8 +557,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>16</durationMove>
-            <durationAttack>65</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UpgradeTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -530,7 +566,7 @@
             <foodCost>0</foodCost>
             <goldCost>2000</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Marksmanship</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>3</piercingAttackChange>
@@ -545,7 +581,7 @@
             <foodCost>0</foodCost>
             <goldCost>500</goldCost>
             <woodCost>150</woodCost>
-            <timeCost>700</timeCost>
+            <timeCost>1</timeCost>
             <name>GuardTower</name>
             <unitPrerequisite>9</unitPrerequisite>
             <basicAttackChange>4</basicAttackChange>
@@ -561,14 +597,14 @@
             <foodCost>1</foodCost>
             <goldCost>600</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>300</timeCost>
+            <timeCost>1</timeCost>
             <name>Footman</name>
             <baseHealth>60</baseHealth>
-            <baseAttack>8</baseAttack>
+            <baseAttack>6</baseAttack>
             <piercingAttack>3</piercingAttack>
             <range>1</range>
             <armor>2</armor>
-            <sightRange>5</sightRange>
+            <sightRange>4</sightRange>
             <canGather>false</canGather>
             <canBuild>false</canBuild>
             <canMove>true</canMove>
@@ -580,8 +616,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>16</durationMove>
-            <durationAttack>25</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -589,7 +625,7 @@
             <foodCost>1</foodCost>
             <goldCost>400</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>225</timeCost>
+            <timeCost>1</timeCost>
             <name>Peasant</name>
             <baseHealth>30</baseHealth>
             <baseAttack>3</baseAttack>
@@ -606,11 +642,11 @@
             <character>112</character>
             <goldGatherRate>100</goldGatherRate>
             <woodGatherRate>100</woodGatherRate>
-            <durationGatherWood>1000</durationGatherWood>
-            <durationGatherGold>200</durationGatherGold>
-            <durationMove>16</durationMove>
-            <durationAttack>25</durationAttack>
-            <durationDeposit>25</durationDeposit>
+            <durationGatherWood>1</durationGatherWood>
+            <durationGatherGold>1</durationGatherGold>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
+            <durationDeposit>1</durationDeposit>
             <produces>5</produces>
             <produces>13</produces>
             <produces>9</produces>
@@ -626,7 +662,7 @@
             <foodCost>0</foodCost>
             <goldCost>500</goldCost>
             <woodCost>250</woodCost>
-            <timeCost>700</timeCost>
+            <timeCost>1</timeCost>
             <name>Farm</name>
             <baseHealth>400</baseHealth>
             <baseAttack>0</baseAttack>
@@ -654,7 +690,7 @@
             <foodCost>0</foodCost>
             <goldCost>4000</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Ballista2</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>15</piercingAttackChange>
@@ -669,7 +705,7 @@
             <foodCost>0</foodCost>
             <goldCost>2000</goldCost>
             <woodCost>1000</woodCost>
-            <timeCost>1000</timeCost>
+            <timeCost>1</timeCost>
             <name>Keep</name>
             <unitPrerequisite>13</unitPrerequisite>
             <basicAttackChange>0</basicAttackChange>
@@ -685,7 +721,7 @@
             <foodCost>0</foodCost>
             <goldCost>900</goldCost>
             <woodCost>500</woodCost>
-            <timeCost>1225</timeCost>
+            <timeCost>1</timeCost>
             <name>Church</name>
             <baseHealth>700</baseHealth>
             <baseAttack>0</baseAttack>
@@ -713,7 +749,7 @@
             <foodCost>0</foodCost>
             <goldCost>800</goldCost>
             <woodCost>450</woodCost>
-            <timeCost>1400</timeCost>
+            <timeCost>1</timeCost>
             <name>Blacksmith</name>
             <unitPrerequisite>13</unitPrerequisite>
             <baseHealth>775</baseHealth>
@@ -742,7 +778,7 @@
             <foodCost>0</foodCost>
             <goldCost>1500</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Ballista1</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>15</piercingAttackChange>
@@ -760,26 +796,17 @@
             <quantity>0</quantity>
             <type>WOOD</type>
         </resourceAmount>
-        <supply>0</supply>
+        <supply>3</supply>
         <supplyCap>0</supplyCap>
     </player>
     <player>
         <ID>1</ID>
-        <unit>
-            <ID>2</ID>
-            <currentHealth>50</currentHealth>
-            <xPosition>11</xPosition>
-            <yPosition>11</yPosition>
-            <templateID>55</templateID>
-            <cargoAmount>0</cargoAmount>
-            <progressAmount>0</progressAmount>
-        </unit>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <ID>64</ID>
             <foodCost>0</foodCost>
             <goldCost>800</goldCost>
             <woodCost>450</woodCost>
-            <timeCost>1400</timeCost>
+            <timeCost>1</timeCost>
             <name>Blacksmith</name>
             <unitPrerequisite>46</unitPrerequisite>
             <baseHealth>775</baseHealth>
@@ -808,7 +835,7 @@
             <foodCost>0</foodCost>
             <goldCost>1500</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Ballista1</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>15</piercingAttackChange>
@@ -823,7 +850,7 @@
             <foodCost>0</foodCost>
             <goldCost>1000</goldCost>
             <woodCost>400</woodCost>
-            <timeCost>1050</timeCost>
+            <timeCost>1</timeCost>
             <name>GryphonAviary</name>
             <baseHealth>500</baseHealth>
             <baseAttack>0</baseAttack>
@@ -852,7 +879,7 @@
             <foodCost>0</foodCost>
             <goldCost>550</goldCost>
             <woodCost>200</woodCost>
-            <timeCost>420</timeCost>
+            <timeCost>1</timeCost>
             <name>ScoutTower</name>
             <baseHealth>100</baseHealth>
             <baseAttack>0</baseAttack>
@@ -872,7 +899,7 @@
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
             <durationMove>1</durationMove>
-            <durationAttack>4</durationAttack>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -880,7 +907,7 @@
             <foodCost>1</foodCost>
             <goldCost>900</goldCost>
             <woodCost>300</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Ballista</name>
             <unitPrerequisite>64</unitPrerequisite>
             <unitPrerequisite>42</unitPrerequisite>
@@ -901,8 +928,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>32</durationMove>
-            <durationAttack>200</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -910,7 +937,7 @@
             <foodCost>0</foodCost>
             <goldCost>20</goldCost>
             <woodCost>10</woodCost>
-            <timeCost>210</timeCost>
+            <timeCost>1</timeCost>
             <name>Wall</name>
             <baseHealth>40</baseHealth>
             <baseAttack>0</baseAttack>
@@ -938,7 +965,7 @@
             <foodCost>0</foodCost>
             <goldCost>1000</goldCost>
             <woodCost>300</woodCost>
-            <timeCost>1050</timeCost>
+            <timeCost>1</timeCost>
             <name>Stables</name>
             <baseHealth>500</baseHealth>
             <baseAttack>0</baseAttack>
@@ -966,7 +993,7 @@
             <foodCost>0</foodCost>
             <goldCost>1200</goldCost>
             <woodCost>800</woodCost>
-            <timeCost>1785</timeCost>
+            <timeCost>1</timeCost>
             <name>TownHall</name>
             <baseHealth>1200</baseHealth>
             <baseAttack>0</baseAttack>
@@ -995,7 +1022,7 @@
             <foodCost>0</foodCost>
             <goldCost>300</goldCost>
             <woodCost>300</woodCost>
-            <timeCost>1000</timeCost>
+            <timeCost>1</timeCost>
             <name>Arrow1</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>1</piercingAttackChange>
@@ -1010,7 +1037,7 @@
             <foodCost>0</foodCost>
             <goldCost>900</goldCost>
             <woodCost>500</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Arrow2</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>1</piercingAttackChange>
@@ -1025,7 +1052,7 @@
             <foodCost>0</foodCost>
             <goldCost>2000</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Longbow</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -1040,7 +1067,7 @@
             <foodCost>0</foodCost>
             <goldCost>600</goldCost>
             <woodCost>450</woodCost>
-            <timeCost>1050</timeCost>
+            <timeCost>1</timeCost>
             <name>LumberMill</name>
             <baseHealth>600</baseHealth>
             <baseAttack>0</baseAttack>
@@ -1068,7 +1095,7 @@
             <foodCost>0</foodCost>
             <goldCost>2500</goldCost>
             <woodCost>1200</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Castle</name>
             <unitPrerequisite>64</unitPrerequisite>
             <unitPrerequisite>37</unitPrerequisite>
@@ -1086,7 +1113,7 @@
             <foodCost>0</foodCost>
             <goldCost>99999</goldCost>
             <woodCost>99999</woodCost>
-            <timeCost>99999</timeCost>
+            <timeCost>1</timeCost>
             <name>SpawnPoint</name>
             <baseHealth>99999</baseHealth>
             <baseAttack>0</baseAttack>
@@ -1118,7 +1145,7 @@
             <foodCost>1</foodCost>
             <goldCost>800</goldCost>
             <woodCost>100</woodCost>
-            <timeCost>450</timeCost>
+            <timeCost>1</timeCost>
             <name>Knight</name>
             <unitPrerequisite>64</unitPrerequisite>
             <unitPrerequisite>37</unitPrerequisite>
@@ -1139,8 +1166,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>12</durationMove>
-            <durationAttack>25</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -1148,7 +1175,7 @@
             <foodCost>0</foodCost>
             <goldCost>700</goldCost>
             <woodCost>400</woodCost>
-            <timeCost>1400</timeCost>
+            <timeCost>1</timeCost>
             <name>Barracks</name>
             <baseHealth>800</baseHealth>
             <baseAttack>0</baseAttack>
@@ -1180,7 +1207,7 @@
             <foodCost>0</foodCost>
             <goldCost>800</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1000</timeCost>
+            <timeCost>1</timeCost>
             <name>Sword1</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>2</piercingAttackChange>
@@ -1196,7 +1223,7 @@
             <foodCost>0</foodCost>
             <goldCost>2400</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Sword2</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>2</piercingAttackChange>
@@ -1212,7 +1239,7 @@
             <foodCost>0</foodCost>
             <goldCost>1500</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Ranger</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -1227,7 +1254,7 @@
             <foodCost>1</foodCost>
             <goldCost>2500</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Gryphon</name>
             <baseHealth>100</baseHealth>
             <baseAttack>0</baseAttack>
@@ -1246,8 +1273,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>12</durationMove>
-            <durationAttack>4</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UpgradeTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -1255,7 +1282,7 @@
             <foodCost>0</foodCost>
             <goldCost>1000</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Paladin</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -1270,7 +1297,7 @@
             <foodCost>0</foodCost>
             <goldCost>900</goldCost>
             <woodCost>500</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Shield2</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -1286,7 +1313,7 @@
             <foodCost>0</foodCost>
             <goldCost>300</goldCost>
             <woodCost>300</woodCost>
-            <timeCost>1000</timeCost>
+            <timeCost>1</timeCost>
             <name>Shield1</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -1302,7 +1329,7 @@
             <foodCost>0</foodCost>
             <goldCost>1500</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Scouting</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>0</piercingAttackChange>
@@ -1317,15 +1344,15 @@
             <foodCost>1</foodCost>
             <goldCost>500</goldCost>
             <woodCost>50</woodCost>
-            <timeCost>350</timeCost>
+            <timeCost>1</timeCost>
             <name>Archer</name>
             <unitPrerequisite>42</unitPrerequisite>
-            <baseHealth>60</baseHealth>
-            <baseAttack>5</baseAttack>
-            <piercingAttack>3</piercingAttack>
-            <range>10</range>
+            <baseHealth>40</baseHealth>
+            <baseAttack>3</baseAttack>
+            <piercingAttack>6</piercingAttack>
+            <range>4</range>
             <armor>0</armor>
-            <sightRange>40</sightRange>
+            <sightRange>5</sightRange>
             <canGather>false</canGather>
             <canBuild>false</canBuild>
             <canMove>true</canMove>
@@ -1337,8 +1364,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>16</durationMove>
-            <durationAttack>65</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UpgradeTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -1346,7 +1373,7 @@
             <foodCost>0</foodCost>
             <goldCost>2000</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Marksmanship</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>3</piercingAttackChange>
@@ -1361,7 +1388,7 @@
             <foodCost>0</foodCost>
             <goldCost>500</goldCost>
             <woodCost>150</woodCost>
-            <timeCost>700</timeCost>
+            <timeCost>1</timeCost>
             <name>GuardTower</name>
             <unitPrerequisite>42</unitPrerequisite>
             <basicAttackChange>4</basicAttackChange>
@@ -1377,14 +1404,14 @@
             <foodCost>1</foodCost>
             <goldCost>600</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>300</timeCost>
+            <timeCost>1</timeCost>
             <name>Footman</name>
             <baseHealth>60</baseHealth>
             <baseAttack>6</baseAttack>
-            <piercingAttack>3</piercingAttack>
+            <piercingAttack>4</piercingAttack>
             <range>1</range>
             <armor>2</armor>
-            <sightRange>5</sightRange>
+            <sightRange>4</sightRange>
             <canGather>false</canGather>
             <canBuild>false</canBuild>
             <canMove>true</canMove>
@@ -1396,8 +1423,8 @@
             <woodGatherRate>0</woodGatherRate>
             <durationGatherWood>1</durationGatherWood>
             <durationGatherGold>1</durationGatherGold>
-            <durationMove>16</durationMove>
-            <durationAttack>25</durationAttack>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
             <durationDeposit>1</durationDeposit>
         </template>
         <template xsi:type="UnitTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -1405,7 +1432,7 @@
             <foodCost>1</foodCost>
             <goldCost>400</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>225</timeCost>
+            <timeCost>1</timeCost>
             <name>Peasant</name>
             <baseHealth>30</baseHealth>
             <baseAttack>3</baseAttack>
@@ -1422,11 +1449,11 @@
             <character>112</character>
             <goldGatherRate>100</goldGatherRate>
             <woodGatherRate>100</woodGatherRate>
-            <durationGatherWood>1000</durationGatherWood>
-            <durationGatherGold>200</durationGatherGold>
-            <durationMove>16</durationMove>
-            <durationAttack>25</durationAttack>
-            <durationDeposit>25</durationDeposit>
+            <durationGatherWood>1</durationGatherWood>
+            <durationGatherGold>1</durationGatherGold>
+            <durationMove>1</durationMove>
+            <durationAttack>1</durationAttack>
+            <durationDeposit>1</durationDeposit>
             <produces>38</produces>
             <produces>46</produces>
             <produces>42</produces>
@@ -1442,7 +1469,7 @@
             <foodCost>0</foodCost>
             <goldCost>500</goldCost>
             <woodCost>250</woodCost>
-            <timeCost>700</timeCost>
+            <timeCost>1</timeCost>
             <name>Farm</name>
             <baseHealth>400</baseHealth>
             <baseAttack>0</baseAttack>
@@ -1470,7 +1497,7 @@
             <foodCost>0</foodCost>
             <goldCost>4000</goldCost>
             <woodCost>0</woodCost>
-            <timeCost>1250</timeCost>
+            <timeCost>1</timeCost>
             <name>Ballista2</name>
             <basicAttackChange>0</basicAttackChange>
             <piercingAttackChange>15</piercingAttackChange>
@@ -1485,7 +1512,7 @@
             <foodCost>0</foodCost>
             <goldCost>2000</goldCost>
             <woodCost>1000</woodCost>
-            <timeCost>1000</timeCost>
+            <timeCost>1</timeCost>
             <name>Keep</name>
             <unitPrerequisite>46</unitPrerequisite>
             <basicAttackChange>0</basicAttackChange>
@@ -1501,7 +1528,7 @@
             <foodCost>0</foodCost>
             <goldCost>900</goldCost>
             <woodCost>500</woodCost>
-            <timeCost>1225</timeCost>
+            <timeCost>1</timeCost>
             <name>Church</name>
             <baseHealth>700</baseHealth>
             <baseAttack>0</baseAttack>
@@ -1532,439 +1559,7 @@
             <quantity>0</quantity>
             <type>WOOD</type>
         </resourceAmount>
-        <supply>1</supply>
+        <supply>-1</supply>
         <supplyCap>0</supplyCap>
     </player>
-    <resourceNode>
-        <ID>1557</ID>
-        <type>TREE</type>
-        <xPosition>4</xPosition>
-        <yPosition>3</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1565</ID>
-        <type>TREE</type>
-        <xPosition>4</xPosition>
-        <yPosition>4</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1573</ID>
-        <type>TREE</type>
-        <xPosition>4</xPosition>
-        <yPosition>5</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1581</ID>
-        <type>TREE</type>
-        <xPosition>4</xPosition>
-        <yPosition>6</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1589</ID>
-        <type>TREE</type>
-        <xPosition>4</xPosition>
-        <yPosition>7</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1597</ID>
-        <type>TREE</type>
-        <xPosition>4</xPosition>
-        <yPosition>8</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1605</ID>
-        <type>TREE</type>
-        <xPosition>4</xPosition>
-        <yPosition>9</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1613</ID>
-        <type>TREE</type>
-        <xPosition>4</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1621</ID>
-        <type>TREE</type>
-        <xPosition>5</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1629</ID>
-        <type>TREE</type>
-        <xPosition>6</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1637</ID>
-        <type>TREE</type>
-        <xPosition>7</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1645</ID>
-        <type>TREE</type>
-        <xPosition>8</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1653</ID>
-        <type>TREE</type>
-        <xPosition>9</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1661</ID>
-        <type>TREE</type>
-        <xPosition>10</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1669</ID>
-        <type>TREE</type>
-        <xPosition>11</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1677</ID>
-        <type>TREE</type>
-        <xPosition>12</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1685</ID>
-        <type>TREE</type>
-        <xPosition>13</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1693</ID>
-        <type>TREE</type>
-        <xPosition>14</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1701</ID>
-        <type>TREE</type>
-        <xPosition>15</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1709</ID>
-        <type>TREE</type>
-        <xPosition>16</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1717</ID>
-        <type>TREE</type>
-        <xPosition>17</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1725</ID>
-        <type>TREE</type>
-        <xPosition>18</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1733</ID>
-        <type>TREE</type>
-        <xPosition>19</xPosition>
-        <yPosition>10</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1741</ID>
-        <type>TREE</type>
-        <xPosition>19</xPosition>
-        <yPosition>9</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1749</ID>
-        <type>TREE</type>
-        <xPosition>19</xPosition>
-        <yPosition>8</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1757</ID>
-        <type>TREE</type>
-        <xPosition>19</xPosition>
-        <yPosition>7</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1765</ID>
-        <type>TREE</type>
-        <xPosition>19</xPosition>
-        <yPosition>6</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1773</ID>
-        <type>TREE</type>
-        <xPosition>19</xPosition>
-        <yPosition>5</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1781</ID>
-        <type>TREE</type>
-        <xPosition>19</xPosition>
-        <yPosition>4</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1789</ID>
-        <type>TREE</type>
-        <xPosition>19</xPosition>
-        <yPosition>3</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1797</ID>
-        <type>TREE</type>
-        <xPosition>4</xPosition>
-        <yPosition>12</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1805</ID>
-        <type>TREE</type>
-        <xPosition>5</xPosition>
-        <yPosition>13</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1813</ID>
-        <type>TREE</type>
-        <xPosition>6</xPosition>
-        <yPosition>14</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1821</ID>
-        <type>TREE</type>
-        <xPosition>7</xPosition>
-        <yPosition>15</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1829</ID>
-        <type>TREE</type>
-        <xPosition>8</xPosition>
-        <yPosition>16</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1837</ID>
-        <type>TREE</type>
-        <xPosition>9</xPosition>
-        <yPosition>17</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1845</ID>
-        <type>TREE</type>
-        <xPosition>10</xPosition>
-        <yPosition>18</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1853</ID>
-        <type>TREE</type>
-        <xPosition>13</xPosition>
-        <yPosition>18</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1861</ID>
-        <type>TREE</type>
-        <xPosition>14</xPosition>
-        <yPosition>17</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1869</ID>
-        <type>TREE</type>
-        <xPosition>15</xPosition>
-        <yPosition>16</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1877</ID>
-        <type>TREE</type>
-        <xPosition>16</xPosition>
-        <yPosition>15</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1885</ID>
-        <type>TREE</type>
-        <xPosition>17</xPosition>
-        <yPosition>14</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1893</ID>
-        <type>TREE</type>
-        <xPosition>18</xPosition>
-        <yPosition>13</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1901</ID>
-        <type>TREE</type>
-        <xPosition>19</xPosition>
-        <yPosition>12</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1909</ID>
-        <type>TREE</type>
-        <xPosition>10</xPosition>
-        <yPosition>12</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1917</ID>
-        <type>TREE</type>
-        <xPosition>10</xPosition>
-        <yPosition>13</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1925</ID>
-        <type>TREE</type>
-        <xPosition>10</xPosition>
-        <yPosition>14</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1933</ID>
-        <type>TREE</type>
-        <xPosition>10</xPosition>
-        <yPosition>15</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1941</ID>
-        <type>TREE</type>
-        <xPosition>10</xPosition>
-        <yPosition>16</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1949</ID>
-        <type>TREE</type>
-        <xPosition>12</xPosition>
-        <yPosition>12</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1957</ID>
-        <type>TREE</type>
-        <xPosition>12</xPosition>
-        <yPosition>13</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1965</ID>
-        <type>TREE</type>
-        <xPosition>12</xPosition>
-        <yPosition>14</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1973</ID>
-        <type>TREE</type>
-        <xPosition>12</xPosition>
-        <yPosition>15</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
-    <resourceNode>
-        <ID>1981</ID>
-        <type>TREE</type>
-        <xPosition>12</xPosition>
-        <yPosition>16</yPosition>
-        <initialAmount>0</initialAmount>
-        <amountRemaining>100</amountRemaining>
-    </resourceNode>
 </state>
