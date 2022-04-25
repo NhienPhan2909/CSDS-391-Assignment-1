@@ -595,9 +595,8 @@ public class RLAgent extends Agent {
 	 * the closest enemy check, and the check to see if the ally footman attacked this enemy in the last turn.
 	 * 
 	 * Other features I calculated but not include in the feature vector:
-	 * check if this enemy previously attacked this ally footman, number of enemies that can attack this ally footman,
-	 * the health of this ally footman and this enemy footman, and number of other ally footmen attacked this enemy in
-	 * the last turn.
+	 * number of other ally footmen attacked this enemy in the last turn, check if this enemy previously attacked this ally footman,
+	 * number of enemies that can attack this ally footman, the health of this ally footman and this enemy footman.
 	 * 
 	 * I choose the closest enemy and the check see if the ally footman attacked this enemy in the last turn to prioritize
 	 * a potential kill move since the closest enemy which was previously attacked may take the the least moves to kill.
@@ -641,13 +640,13 @@ public class RLAgent extends Agent {
 		case 2:
 			result = featurePreviouslyAttacking(stateView, historyView, allyID, enemyID);
 			break;
-		// If this was the enemy previously attacked the ally footman
+		// Number of ally footmen that attacked this particular enemy in last turn
 		case 3:
-			result = featureEnemyAttacking(stateView, historyView, allyID, enemyID);
+			result = featureAllyAttackerCount(stateView, historyView, enemyID);
 			break;
-		// The number of enemies that can attack this ally footman
+		// If this was the enemy previously attacked the ally footman
 		case 4:
-			result = featureEnemiesThatCanAttackAnAlly(stateView, historyView, allyID);
+			result = featureEnemyAttacking(stateView, historyView, allyID, enemyID);
 			break;
 		// The health of the ally footman
 		case 5:
@@ -656,10 +655,6 @@ public class RLAgent extends Agent {
 		// The health of the enemy footman
 		case 6:
 			result = featureEnemyHealth(stateView, enemyID);
-			break;
-		// Number of ally footmen that attacked this particular enemy in last turn
-		case 7:
-			result = featureAllyAttackerCount(stateView, historyView, enemyID);
 			break;
 		}
 		return result;
@@ -721,8 +716,7 @@ public class RLAgent extends Agent {
 			}
 		}
 		return closestEnemyID;
-	}
-	
+	}	
 	
     /**
      * Calculate the Chebyshev distance between two footmen
@@ -754,92 +748,8 @@ public class RLAgent extends Agent {
 		}
 		return targetedAction.getTargetId() == enemyID ? 1 : 0;
 	}
-	
+    
     /**
-	 * Check if an enemy footman attacked a particular all in the previous turn
-	 * @param stateView Current state of the SEPIA game
-     * @param historyView History of the game up until this turn
-	 * @param allyID ID of ally footman to check
-	 * @param enemyID ID of enemy to check
-	 * @return 1 if this enemy footman attacked ally enemy, 0 otherwise
-	 */
-    private double featureEnemyAttacking(StateView stateView, HistoryView historyView, int allyID, int enemyID) {
-		// Get the count for previous turn and return 0 if it is the first turn
-    	int previousTurnNumber = stateView.getTurnNumber() - 1;
-		if(previousTurnNumber < 0){
-			return 0;
-		}
-		// Create a map that maps each ally footman to their action in the last turn
-		Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(ENEMY_PLAYERNUM, previousTurnNumber);
-		// Check each action in the map to see if this particular enemy attacked this particular ally
-		for(Action action : commandsIssued.values()){
-			TargetedAction targetedAction = (TargetedAction) action;
-			if(targetedAction.getTargetId() == allyID && targetedAction.getUnitId() == enemyID){
-				return 1;
-			}
-		}
-		return 0;
-	}
-	
-	/**
-	 * Count the number of enemies can attack on particular ally footman
-	 * @param stateView Current state of the SEPIA game
-     * @param historyView History of the game up until this turn
-	 * @param allyID ID of ally footman to investigate
-	 * @return the number of enemies can attack this ally footman
-	 */
-    private double featureEnemiesThatCanAttackAnAlly(StateView stateView, HistoryView historyView, int allyID) {
-		// Create the variables to count enemies and a variable for the ally footman
-    	int enemiesCount = 0;
-		UnitView ally = stateView.getUnit(allyID);
-		if(ally == null){
-			return enemiesCount;
-		}
-		// Get the X and Y position of ally
-		int allyXPosition = ally.getXPosition();
-		int allyYPosition = ally.getYPosition();
-		// Check each enemy
-		for(Integer enemyID : enemyFootmen){
-			UnitView enemy = stateView.getUnit(enemyID);
-			if(enemy != null){
-				// Get the position of the enemy and calculate the distance between that enemy and the ally
-				int enemyXPosition = enemy.getXPosition();
-				int enemyYPosition = enemy.getYPosition();
-				if(getDistance(allyXPosition, enemyXPosition, allyYPosition, enemyYPosition) < 2){
-					// Increase the enemies count if possible
-					enemiesCount++;
-				}
-			}
-		}
-		return enemiesCount;
-	}
-	
-	/**
-	 * Get the health of a particular ally footman
-	 * @param stateView Current state of the SEPIA game
-	 * @param allyID ID of ally footman
-	 * @return the health of ally footman
-	 */
-    private double featureAllyHealth(StateView stateView, int allyID) {
-		Unit.UnitView unit = stateView.getUnit(allyID);
-		if(unit == null){
-			return 0;
-		}
-		return stateView.getUnit(allyID).getHP();
-	}
-	
-    /**
-	 * Get the health of a particular enemy footman
-	 * @param stateView Current state of the SEPIA game
-	 * @param enemyID ID of enemy footman
-	 * @return the health of enemy footman
-	 */
-    private double featureEnemyHealth(StateView stateView, int enemyID) {
-		UnitView enemy = stateView.getUnit(enemyID);		
-		return enemy == null ? 0 : enemy.getHP();
-	}
-	
-	/**
 	 * Count the number of allies that attacked a particular enemy footman in the last turn
 	 * @param stateView Current state of the SEPIA game
      * @param historyView History of the game up until this turn
@@ -865,6 +775,57 @@ public class RLAgent extends Agent {
 			}
 		}
 		return alliesCount;
+	}
+	
+    /**
+	 * Check if an enemy footman attacked a particular all in the previous turn
+	 * @param stateView Current state of the SEPIA game
+     * @param historyView History of the game up until this turn
+	 * @param allyID ID of ally footman to check
+	 * @param enemyID ID of enemy to check
+	 * @return 1 if this enemy footman attacked ally enemy, 0 otherwise
+	 */
+    private double featureEnemyAttacking(StateView stateView, HistoryView historyView, int allyID, int enemyID) {
+		// Get the count for previous turn and return 0 if it is the first turn
+    	int previousTurnNumber = stateView.getTurnNumber() - 1;
+		if(previousTurnNumber < 0){
+			return 0;
+		}
+		// Create a map that maps each ally footman to their action in the last turn
+		Map<Integer, Action> commandsIssued = historyView.getCommandsIssued(ENEMY_PLAYERNUM, previousTurnNumber);
+		// Check each action in the map to see if this particular enemy attacked this particular ally
+		for(Action action : commandsIssued.values()){
+			TargetedAction targetedAction = (TargetedAction) action;
+			if(targetedAction.getTargetId() == allyID && targetedAction.getUnitId() == enemyID){
+				return 1;
+			}
+		}
+		return 0;
+	}	
+	
+	/**
+	 * Get the health of a particular ally footman
+	 * @param stateView Current state of the SEPIA game
+	 * @param allyID ID of ally footman
+	 * @return the health of ally footman
+	 */
+    private double featureAllyHealth(StateView stateView, int allyID) {
+		Unit.UnitView unit = stateView.getUnit(allyID);
+		if(unit == null){
+			return 0;
+		}
+		return stateView.getUnit(allyID).getHP();
+	}
+	
+    /**
+	 * Get the health of a particular enemy footman
+	 * @param stateView Current state of the SEPIA game
+	 * @param enemyID ID of enemy footman
+	 * @return the health of enemy footman
+	 */
+    private double featureEnemyHealth(StateView stateView, int enemyID) {
+		UnitView enemy = stateView.getUnit(enemyID);		
+		return enemy == null ? 0 : enemy.getHP();
 	}
     
     /**
